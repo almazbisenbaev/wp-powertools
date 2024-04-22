@@ -75,7 +75,7 @@ function powertools_homepage() {
             </div>';
       echo '<div class="ptools-card">
               <a href="/wp-admin/admin.php?page=powertools-junk-cleaner">Junk Cleaner</a>
-              <br>This tool removes the useless lines of code from HTML (such as WordPress version, emojis, etc.)
+              <br>This tool lets you delete the drafts and revisions that are taking up your disc space
             </div>';
       echo '<div class="ptools-card">
               <a href="/wp-admin/admin.php?page=powertools-system-info">System Info</a>
