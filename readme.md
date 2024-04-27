@@ -3,6 +3,10 @@
 
 Simple tools that solve common problems during WordPress development and maximize your productivity
 
+Download the latest release: https://almazbisenbaev.gumroad.com/l/wp-powertools
+
+---
+
 ## Available tools:
 - Hide Admin Bar: Remove the annoying black bar on top of your website, or keep the admin bar but remove the 32px margin that is automatically added to the <html> element
 - Gutenberg Disabler: Disable the new visual editor and return to the legacy one (TinyMCE)
