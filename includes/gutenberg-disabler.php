@@ -51,15 +51,6 @@ function powertools_gutenberg_disabler_page() {
 <?php
 }
 
-
-function disable_block_for_post_type( $use_block_editor, $post ) {
-    if ( 'gutenbergless' === $post->post_type ) {
-        return false;
-    };
-    return $use_block_editor;
-}
-
-
 function powertools_disable_gutenberg() {
 
     $is_gutenberg_disabled = get_option('powertools_disable_gutenberg');
