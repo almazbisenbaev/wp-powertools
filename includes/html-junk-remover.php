@@ -22,11 +22,15 @@ function powertools_html_junk_remover_page() {
 
         <form class="ptools-metabox" method="post">
 
-            <label for="enable_html_junk_remover">
-                <input type="checkbox" id="enable_html_junk_remover" name="enable_html_junk_remover" <?php checked(1, $is_junk_remover_enabled); ?> />
-                Remove HTML junk
+            <label class="ptools-toggler">
+                <div class="ptools-toggler-input">
+                    <input type="checkbox" id="enable_html_junk_remover" name="enable_html_junk_remover" <?php checked(1, $is_junk_remover_enabled); ?> />
+                </div>
+                <div class="ptools-toggler-content">
+                    <div>Remove HTML junk</div>
+                    <div><i>Remove version tags, emojis and stuff from HEAD</i></div>
+                </div>
             </label>
-            <div>Remove version tags, emojis and stuff from HEAD</div>
 
             <div class="ptools-metabox-footer">
                 <input type="submit" name="save" value="Save Changes" class="button-primary">

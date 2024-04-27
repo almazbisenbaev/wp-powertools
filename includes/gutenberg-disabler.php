@@ -24,10 +24,21 @@ function powertools_gutenberg_disabler_page() {
 
         <form class="ptools-metabox" method="post">
 
-            <label for="disable_gutenberg">
-                <input type="checkbox" id="disable_gutenberg" name="disable_gutenberg" <?php checked(1, $is_gutenberg_disabled); ?> />
-                Disable Gutenberg
+            <label class="ptools-toggler" for="disable_gutenberg">
+                <div class="ptools-toggler-input">
+                    <input type="checkbox" id="disable_gutenberg" name="disable_gutenberg" <?php checked(1, $is_gutenberg_disabled); ?> />
+                </div>
+                <div class="ptools-toggler-content">
+                    <div>Use Gutenberg Disabler</div>
+                </div>
             </label>
+
+            <!-- <div class="ptools-field">
+                <div class="ptools-field-label">Disable Gutenberg for the following post types:</div>
+                <div class="ptools-field-instructions">Leave empty to disable for all post types</div>
+                <input type="text" value="">
+                <div class="ptools-field-hint">Comma-separated list. E.g: <i>post, page, portfolio</i></div>
+            </div> -->
 
             <div class="ptools-metabox-footer">
                 <input type="submit" name="save" value="Save Changes" class="button-primary">
@@ -41,12 +52,19 @@ function powertools_gutenberg_disabler_page() {
 }
 
 
+function disable_block_for_post_type( $use_block_editor, $post ) {
+    if ( 'gutenbergless' === $post->post_type ) {
+        return false;
+    };
+    return $use_block_editor;
+}
+
+
 function powertools_disable_gutenberg() {
 
     $is_gutenberg_disabled = get_option('powertools_disable_gutenberg');
 
     if ($is_gutenberg_disabled == 1) {
-        // add_filter('use_block_editor_for_post', '__return_false', 10);
 
         // Disable Gutenberg on the back end.
         add_filter( 'use_block_editor_for_post', '__return_false' );
@@ -67,6 +85,7 @@ function powertools_disable_gutenberg() {
             // Remove classic-themes CSS for backwards compatibility for button blocks.
             wp_dequeue_style( 'classic-theme-styles' );
         }, 20 );
+
     }
     
 }

@@ -35,6 +35,15 @@
     margin-bottom: 10px;
 }
 
+.ptools-toggler {
+    display: flex;
+    gap: 5px;
+}
+
+.ptools-toggler-content {
+    flex: 1;
+}
+
 .ptools-cards {
     display: flex;
     flex-wrap: wrap;
