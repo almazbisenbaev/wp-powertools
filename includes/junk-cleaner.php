@@ -2,13 +2,21 @@
 
 function powertools_junk_cleaner_page() {
 
+    global $wpdb;
+
     if (!current_user_can('manage_options')) {
         wp_die('You do not have sufficient permissions to access this page.');
     }
 
-    // Get all revisions and drafts
-    $revisions = wp_get_post_revisions();
-    $drafts = get_posts(array('post_status' => 'draft'));
+    // Handle deletion
+    if (isset($_POST['delete_revisions_drafts'])) {
+        $wpdb->query("DELETE FROM $wpdb->posts WHERE post_status = 'draft' OR post_type = 'revision'");
+        echo '<p>All revisions and drafts have been deleted.</p>';
+    }
+
+    // Get the number of drafts and revisions
+    $drafts_count = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'draft'");
+    $revisions_count = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'revision'");
 
     ?>
 
@@ -22,8 +30,8 @@ function powertools_junk_cleaner_page() {
         <div class="ptools-metabox">
 
             <?php
-                echo '<div>Total Revisions: ' . count($revisions) . '</div>';
-                echo '<div>Total Drafts: ' . count($drafts) . '</div>';
+                echo '<div>Total Drafts: ' . $drafts_count . '</div>';
+                echo '<div>Total Revisions: ' . $revisions_count . '</div>';
             ?>
 
             <hr>
@@ -38,18 +46,6 @@ function powertools_junk_cleaner_page() {
     </div>
 
 
-    <?php
-
-    // Handle deletion
-    if (isset($_POST['delete_revisions_drafts'])) {
-        foreach ($revisions as $revision) {
-            wp_delete_post($revision->ID, true);
-        }
-        foreach ($drafts as $draft) {
-            wp_delete_post($draft->ID, true);
-        }
-        echo '<p>All revisions and drafts have been deleted.</p>';
-    }
-
+<?php
 }
 
