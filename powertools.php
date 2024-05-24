@@ -35,6 +35,9 @@ add_action('init', 'powertools_remove_html_junk');
 require_once plugin_dir_path( __FILE__ ) . 'includes/junk-cleaner.php';
 // add_action('init', 'powertools_junk_cleaner');
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/cpt-manager.php';
+// add_action('init', 'powertools_junk_cleaner');
+
 require_once plugin_dir_path( __FILE__ ) . 'includes/system-info.php';
 
 

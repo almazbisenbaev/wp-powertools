@@ -53,13 +53,4 @@ function powertools_setup_menu() {
         'powertools_junk_cleaner_page'
     );
     
-    add_submenu_page(
-        'powertools',
-        'System Info',
-        'System Info',
-        'manage_options',
-        'powertools-system-info',
-        'powertools_system_info_page'
-    );
-    
 }
