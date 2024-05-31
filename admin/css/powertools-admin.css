@@ -1,3 +1,7 @@
+.toplevel_page_powertools #wpcontent {
+    padding: 20px;
+}
+
 .ptools-settings {
     max-width: 100%;
     width: 1200px;
@@ -15,7 +19,7 @@
 .ptools-metabox {
     background: #fff;
     border: 1px solid rgba(0,10,30,0.05);
-    border-radius: 10px;
+    border-radius: 20px;
 
     padding: 30px;
     margin-top: 20px;
@@ -52,8 +56,36 @@
 
 .ptools-card {
     background: #fff;
-    border-radius: 10px;
+    border-radius: 20px;
     display: block;
     flex-basis: 300px;
     padding: 30px;
+}
+
+
+.ptools-intro {
+    background: #fff;
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+}
+
+.ptools-intro-logo {
+    padding: 30px;
+}
+
+.ptools-intro-logo img {
+    display: block;
+    width: 56px;
+    height: auto !important; 
+}
+
+.ptools-intro-content {
+    padding: 30px;
+}
+
+.ptools-intro h1 {
+    letter-spacing: -0.02em;
+    margin-top: 0;
 }

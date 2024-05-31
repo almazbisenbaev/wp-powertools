@@ -48,7 +48,7 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/system-info.php';
 function powertools_enqueue_styles() {
 
     // CSS for dashboard
-    wp_enqueue_style('powertools-styles', plugin_dir_url(__FILE__) . 'admin/css/powertools-admin.css', array(), '0.1.2');
+    wp_enqueue_style('powertools-styles', plugin_dir_url(__FILE__) . 'admin/css/powertools-admin.css', array(), '0.1.3');
 
 }
 
@@ -59,8 +59,11 @@ add_action('admin_enqueue_scripts', 'powertools_enqueue_styles');
 function powertools_homepage() {
 
     echo '<div class="ptools-intro">';
-      echo '<h1 class="ptools-intro-title">Welcome to Power Tools!</h1>';
-      echo '<div class="ptools-intro-descr">Simple tools that solve common problems during WordPress development and maximize your productivity</div>';
+      echo '<div class="ptools-intro-logo"><img src="' . plugin_dir_url(__FILE__) . 'images/logo-icon.png"></div>';
+      echo '<div class="ptools-intro-content">';
+        echo '<h1 class="ptools-intro-title">Welcome to Power Tools!</h1>';
+        echo '<div class="ptools-intro-descr">Simple tools that solve common problems during WordPress development and maximize your productivity</div>';
+      echo '</div>';
     echo '</div>';
 
     echo '<div class="ptools-cards" style="margin: 30px 0;">';
