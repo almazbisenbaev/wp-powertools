@@ -68,6 +68,10 @@ function powertools_homepage() {
 
     echo '<div class="ptools-cards" style="margin: 30px 0;">';
       echo '<div class="ptools-card">
+              <a href="/wp-admin/admin.php?page=powertools_cptm">CPT Manager</a>
+              <br>Easily create and manage custom post types
+            </div>';
+      echo '<div class="ptools-card">
               <a href="/wp-admin/admin.php?page=powertools-hide-admin-bar">Hide Admin Bar</a>
               <br>Hide the black bar on top of your website or remove the 32px margin that is added to &#60;html&#62; tag
             </div>';
