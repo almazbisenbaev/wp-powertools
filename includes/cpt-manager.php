@@ -36,7 +36,6 @@ class CustomPostTypeManager {
     }
 
     public function settings_page() {
-
         $custom_post_types = get_option($this->option_name, []);
 
         if (!is_array($custom_post_types)) {
@@ -45,7 +44,6 @@ class CustomPostTypeManager {
         ?>
 
         <div class="wrap">
-
             <h1>Custom Post Type Manager</h1>
 
             <?php if (isset($_GET['error_message'])): ?>
@@ -78,6 +76,30 @@ class CustomPostTypeManager {
                         <th scope="row">Has Archive</th>
                         <td><input type="checkbox" name="powertools_cptm_has_archive" value="1" checked /></td>
                     </tr>
+                    <!-- New fields start here -->
+                    <tr valign="top">
+                        <th scope="row">Hierarchical</th>
+                        <td><input type="checkbox" name="powertools_cptm_hierarchical" value="1" /></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Menu Position (the higher the number, the lower is its position on the sidebar)</th>
+                        <td><input type="number" name="powertools_cptm_menu_position" value="" /></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Menu Icon</th>
+                        <td><input type="text" name="powertools_cptm_menu_icon" value="" placeholder="dashicons-admin-post" /></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Supports</th>
+                        <td>
+                            <label><input type="checkbox" name="powertools_cptm_supports[]" value="title" checked /> Title</label><br>
+                            <label><input type="checkbox" name="powertools_cptm_supports[]" value="editor" checked /> Editor</label><br>
+                            <label><input type="checkbox" name="powertools_cptm_supports[]" value="thumbnail" checked /> Thumbnail</label><br>
+                            <label><input type="checkbox" name="powertools_cptm_supports[]" value="excerpt" /> Excerpt</label><br>
+                            <label><input type="checkbox" name="powertools_cptm_supports[]" value="custom-fields" /> Custom Fields</label>
+                        </td>
+                    </tr>
+                    <!-- New fields end here -->
                 </table>
                 <?php submit_button('Add Custom Post Type'); ?>
             </form>
@@ -91,7 +113,11 @@ class CustomPostTypeManager {
                         <th>Singular Label</th>
                         <th>Plural Label</th>
                         <th>Public</th>
-                        <th>Has Archive</
+                        <th>Has Archive</th>
+                        <th>Hierarchical</th>
+                        <th>Menu Position</th>
+                        <th>Menu Icon</th>
+                        <th>Supports</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -103,6 +129,10 @@ class CustomPostTypeManager {
                         <td><?php echo esc_html($cpt['plural_label']); ?></td>
                         <td><?php echo $cpt['public'] ? 'Yes' : 'No'; ?></td>
                         <td><?php echo $cpt['has_archive'] ? 'Yes' : 'No'; ?></td>
+                        <td><?php echo isset($cpt['hierarchical']) && $cpt['hierarchical'] ? 'Yes' : 'No'; ?></td>
+                        <td><?php echo isset($cpt['menu_position']) ? esc_html($cpt['menu_position']) : ''; ?></td>
+                        <td><?php echo isset($cpt['menu_icon']) ? esc_html($cpt['menu_icon']) : ''; ?></td>
+                        <td><?php echo isset($cpt['supports']) ? esc_html(implode(', ', $cpt['supports'])) : ''; ?></td>
                         <td>
                             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                                 <input type="hidden" name="action" value="powertools_cptm_delete">
@@ -121,7 +151,6 @@ class CustomPostTypeManager {
     }
 
     public function handle_add_post_type() {
-
         if (!isset($_POST['powertools_cptm_add_nonce']) || !wp_verify_nonce($_POST['powertools_cptm_add_nonce'], 'powertools_cptm_add_nonce_action')) {
             $this->redirect_with_error('Nonce verification failed for adding post type.');
         }
@@ -136,6 +165,10 @@ class CustomPostTypeManager {
         $plural_label = sanitize_text_field($_POST['powertools_cptm_plural_label']);
         $public = isset($_POST['powertools_cptm_public']) ? true : false;
         $has_archive = isset($_POST['powertools_cptm_has_archive']) ? true : false;
+        $hierarchical = isset($_POST['powertools_cptm_hierarchical']) ? true : false;
+        $menu_position = isset($_POST['powertools_cptm_menu_position']) ? intval($_POST['powertools_cptm_menu_position']) : null;
+        $menu_icon = sanitize_text_field($_POST['powertools_cptm_menu_icon']);
+        $supports = isset($_POST['powertools_cptm_supports']) ? array_map('sanitize_text_field', $_POST['powertools_cptm_supports']) : ['title', 'editor', 'thumbnail'];
 
         if (!empty($name) && !empty($singular_label) && !empty($plural_label)) {
             $custom_post_types[$name] = [
@@ -144,6 +177,10 @@ class CustomPostTypeManager {
                 'plural_label' => $plural_label,
                 'public' => $public,
                 'has_archive' => $has_archive,
+                'hierarchical' => $hierarchical,
+                'menu_position' => $menu_position,
+                'menu_icon' => $menu_icon,
+                'supports' => $supports,
             ];
             update_option($this->option_name, $custom_post_types);
         } else {
@@ -185,7 +222,6 @@ class CustomPostTypeManager {
     }
 
     public function register_custom_post_types() {
-
         $custom_post_types = get_option($this->option_name, []);
 
         if (!is_array($custom_post_types)) {
@@ -201,13 +237,15 @@ class CustomPostTypeManager {
                 ],
                 'public' => $cpt['public'],
                 'has_archive' => $cpt['has_archive'],
+                'hierarchical' => isset($cpt['hierarchical']) ? $cpt['hierarchical'] : false,
+                'menu_position' => isset($cpt['menu_position']) ? $cpt['menu_position'] : null,
+                'menu_icon' => isset($cpt['menu_icon']) ? $cpt['menu_icon'] : 'dashicons-admin-post',
+                'supports' => isset($cpt['supports']) ? $cpt['supports'] : ['title', 'editor', 'thumbnail'],
                 'show_ui' => true,
                 'show_in_menu' => true,
-                'supports' => ['title', 'editor', 'thumbnail'],
             ];
             register_post_type($cpt['name'], $args);
         }
-
     }
 }
 
