@@ -19,20 +19,20 @@ function powertools_setup_menu() {
     
     add_submenu_page(
         'powertools',
-        'Hide Admin Bar',
-        'Hide Admin Bar',
-        'manage_options',
-        'powertools-hide-admin-bar',
-        'powertools_hide_admin_bar_page'
-    );
-    
-    add_submenu_page(
-        'powertools',
         'Gutenberg Disabler',
         'Gutenberg Disabler',
         'manage_options',
         'powertools-gutenberg-disabler',
         'powertools_gutenberg_disabler_page'
+    );
+    
+    add_submenu_page(
+        'powertools',
+        'Toolbar Toggler',
+        'Toolbar Toggler',
+        'manage_options',
+        'powertools-toolbar-toggler',
+        'powertools_toolbar_toggler_page'
     );
     
     add_submenu_page(

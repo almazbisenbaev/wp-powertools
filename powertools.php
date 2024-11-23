@@ -1,16 +1,12 @@
 <?php
-/**
- * @package Power_Tools
- * @version 0.1.0
- */
 /*
 Plugin Name: Power Tools
-Plugin URI: https://bruteforce.kz/
+Plugin URI: https://github.com/almazbisenbaev/wp-powertools
 Description: Useful WordPress utilities to solve common WordPress problems and maximize your productivity 
 Author: Almaz Bisenbaev
-Version: 0.1.0
+Version: 0.1.1
 Requires at least: 6.0
-Tested up to: 6.5
+Tested up to: 6.7.1
 Text Domain: powertools
 Author URI: https://bruteforce.kz/
 */
@@ -26,8 +22,8 @@ add_action('admin_menu', 'powertools_setup_menu');
 require_once plugin_dir_path( __FILE__ ) . 'includes/gutenberg-disabler.php';
 add_action('init', 'powertools_disable_gutenberg');
 
-require_once plugin_dir_path( __FILE__ ) . 'includes/hide-admin-bar.php';
-add_action('init', 'powertools_hide_admin_bar');
+require_once plugin_dir_path( __FILE__ ) . 'includes/toolbar-toggler.php';
+add_action('wp_footer', 'powertools_toolbar_toggler');
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/html-junk-remover.php';
 add_action('init', 'powertools_remove_html_junk');
@@ -72,8 +68,8 @@ function powertools_homepage() {
               <br>Easily create and manage custom post types
             </div>';
       echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools-hide-admin-bar">Hide Admin Bar</a>
-              <br>Hide the black bar on top of your website or remove the 32px margin that is added to &#60;html&#62; tag
+              <a href="/wp-admin/admin.php?page=powertools-toolbar-toggler">Admin Toolbar Toggler</a>
+              <br>Replaces the admin toolbar with a nice toggler button
             </div>';
       echo '<div class="ptools-card">
               <a href="/wp-admin/admin.php?page=powertools-gutenberg-disabler">Gutenberg Disabler</a>
