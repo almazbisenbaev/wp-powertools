@@ -35,6 +35,7 @@ add_action('plugins_loaded', 'powertools_init');
 
 // Include required files
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/menu.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/tool-manager.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/gutenberg-disabler.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/comments-disabler.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/toolbar-toggler.php';
@@ -84,20 +85,44 @@ function powertools_init_admin_menu() {
 }
 add_action('plugins_loaded', 'powertools_init_admin_menu');
 
-// Initialize CPT manager
-function powertools_init_cpt_manager() {
-    $cpt_manager = new PowerTools\CPT\Manager();
-}
-add_action('init', 'powertools_init_cpt_manager');
+// Initialize tools based on their active state
+function powertools_init_tools() {
+    $tool_manager = new PowerTools\Admin\Tool_Manager();
+    $active_tools = $tool_manager->get_active_tools();
 
-// Initialize system info
-function powertools_init_system_info() {
-    $system_info = new PowerTools\System\Info();
-}
-add_action('init', 'powertools_init_system_info');
+    // Initialize CPT manager if active
+    if (isset($active_tools['cpt_manager']) && $active_tools['cpt_manager']) {
+        $cpt_manager = new PowerTools\CPT\Manager();
+    }
 
-// Initialize comments disabler
-function powertools_init_comments_disabler() {
-    $comments_disabler = new PowerTools\Comments\Comments_Disabler();
+    // Initialize system info if active
+    if (isset($active_tools['system_info']) && $active_tools['system_info']) {
+        $system_info = new PowerTools\System\Info();
+    }
+
+    // Initialize comments disabler if active
+    if (isset($active_tools['comments_disabler']) && $active_tools['comments_disabler']) {
+        $comments_disabler = new PowerTools\Comments\Comments_Disabler();
+    }
+
+    // Initialize toolbar toggler if active
+    if (isset($active_tools['toolbar_toggler']) && $active_tools['toolbar_toggler']) {
+        $toolbar_toggler = new PowerTools\Toolbar\Toolbar_Toggler();
+    }
+
+    // Initialize HTML junk remover if active
+    if (isset($active_tools['html_junk_remover']) && $active_tools['html_junk_remover']) {
+        $html_junk_remover = new PowerTools\HTML\Junk_Remover();
+    }
+
+    // Initialize junk cleaner if active
+    if (isset($active_tools['junk_cleaner']) && $active_tools['junk_cleaner']) {
+        $junk_cleaner = new PowerTools\Cleaner\Junk_Cleaner();
+    }
+
+    // Initialize Gutenberg disabler if active
+    if (isset($active_tools['gutenberg_disabler']) && $active_tools['gutenberg_disabler']) {
+        $gutenberg_disabler = new PowerTools\Gutenberg\Gutenberg_Disabler();
+    }
 }
-add_action('init', 'powertools_init_comments_disabler');
+add_action('init', 'powertools_init_tools');

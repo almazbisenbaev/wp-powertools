@@ -46,71 +46,27 @@ class Admin_Menu {
      * Add submenu pages
      */
     private function add_submenu_pages() {
-        // Add CPT Manager submenu
-        add_submenu_page(
-            'powertools',
-            __('CPT Manager', 'powertools'),
-            __('CPT Manager', 'powertools'),
-            'manage_options',
-            'powertools-cpt-manager',
-            array($this, 'render_cpt_manager')
-        );
+        $tool_manager = new Tool_Manager();
+        $active_tools = $tool_manager->get_active_tools();
+        $available_tools = $tool_manager->get_available_tools();
 
-        // Add Gutenberg Disabler submenu
-        add_submenu_page(
-            'powertools',
-            __('Gutenberg Disabler', 'powertools'),
-            __('Gutenberg Disabler', 'powertools'),
-            'manage_options',
-            'powertools-gutenberg-disabler',
-            array($this, 'render_gutenberg_disabler')
-        );
+        foreach ($available_tools as $tool_id => $tool) {
+            if (isset($active_tools[$tool_id]) && $active_tools[$tool_id]) {
+                $page_slug = 'powertools-' . str_replace('_', '-', $tool_id);
+                $render_method = 'render_' . $tool_id;
 
-        // Add Comments Disabler submenu
-        add_submenu_page(
-            'powertools',
-            __('Comments Disabler', 'powertools'),
-            __('Comments Disabler', 'powertools'),
-            'manage_options',
-            'powertools-comments-disabler',
-            array($this, 'render_comments_disabler')
-        );
-
-        add_submenu_page(
-            'powertools',
-            __('Toolbar Toggler', 'powertools'),
-            __('Toolbar Toggler', 'powertools'),
-            'manage_options',
-            'powertools-toolbar-toggler',
-            array($this, 'render_toolbar_toggler')
-        );
-
-        add_submenu_page(
-            'powertools',
-            __('HTML Junk Remover', 'powertools'),
-            __('HTML Junk Remover', 'powertools'),
-            'manage_options',
-            'powertools-html-junk-remover',
-            array($this, 'render_html_junk_remover')
-        );
-
-        add_submenu_page(
-            'powertools',
-            __('Junk Cleaner', 'powertools'),
-            __('Junk Cleaner', 'powertools'),
-            'manage_options',
-            'powertools-junk-cleaner',
-            array($this, 'render_junk_cleaner')
-        );
-
-        add_submenu_page(
-            'powertools',
-            __('System Info', 'powertools'),
-            __('System Info', 'powertools'),
-            'manage_options',
-            'powertools-system-info',
-            array($this, 'render_system_info')
-        );
+                if (method_exists($this, $render_method)) {
+                    add_submenu_page(
+                        'powertools',
+                        $tool['name'],
+                        $tool['name'],
+                        'manage_options',
+                        $page_slug,
+                        array($this, $render_method)
+                    );
+                }
+            }
+        }
     }
 
     /**

@@ -9,6 +9,10 @@
 if (!defined('WPINC')) {
     die;
 }
+
+$tool_manager = new \PowerTools\Admin\Tool_Manager();
+$available_tools = $tool_manager->get_available_tools();
+$active_tools = $tool_manager->get_active_tools();
 ?>
 
 <div class="wrap powertools-homepage">
@@ -25,53 +29,28 @@ if (!defined('WPINC')) {
     </div>
 
     <div class="ptools-cards">
-        <div class="ptools-card">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-cpt-manager')); ?>">
-                <?php esc_html_e('CPT Manager', 'powertools'); ?>
-            </a>
-            <br>
-            <?php esc_html_e('Easily create and manage custom post types', 'powertools'); ?>
-        </div>
-
-        <div class="ptools-card">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-toolbar-toggler')); ?>">
-                <?php esc_html_e('Admin Toolbar Toggler', 'powertools'); ?>
-            </a>
-            <br>
-            <?php esc_html_e('Replaces the admin toolbar with a nice toggler button', 'powertools'); ?>
-        </div>
-
-        <div class="ptools-card">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-gutenberg-disabler')); ?>">
-                <?php esc_html_e('Gutenberg Disabler', 'powertools'); ?>
-            </a>
-            <br>
-            <?php esc_html_e('Return the legacy editor for specific post types', 'powertools'); ?>
-        </div>
-
-        <div class="ptools-card">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-html-junk-remover')); ?>">
-                <?php esc_html_e('HTML Junk Remover', 'powertools'); ?>
-            </a>
-            <br>
-            <?php esc_html_e('This tool removes the useless lines of code from HTML (such as WordPress version, emojis, etc.)', 'powertools'); ?>
-        </div>
-
-        <div class="ptools-card">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-junk-cleaner')); ?>">
-                <?php esc_html_e('Junk Cleaner', 'powertools'); ?>
-            </a>
-            <br>
-            <?php esc_html_e('This tool lets you delete the drafts and revisions that are taking up your disc space', 'powertools'); ?>
-        </div>
-
-        <div class="ptools-card">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-system-info')); ?>">
-                <?php esc_html_e('System Info', 'powertools'); ?>
-            </a>
-            <br>
-            <?php esc_html_e('View and export system info that can be useful for your IT guy or a tech support agent', 'powertools'); ?>
-        </div>
+        <?php foreach ($available_tools as $tool_id => $tool): ?>
+            <div class="ptools-card">
+                <div class="ptools-card-header">
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="ptools-tool-toggle">
+                        <input type="hidden" name="action" value="powertools_toggle_tool">
+                        <?php wp_nonce_field('powertools_toggle_tool', 'powertools_toggle_nonce'); ?>
+                        <input type="hidden" name="tool_id" value="<?php echo esc_attr($tool_id); ?>">
+                        <input type="hidden" name="is_active" value="<?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? '0' : '1'; ?>">
+                        <button type="submit" class="button <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? 'button-primary' : 'button-secondary'; ?>">
+                            <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? esc_html__('Active', 'powertools') : esc_html__('Inactive', 'powertools'); ?>
+                        </button>
+                    </form>
+                </div>
+                <div class="ptools-card-content">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-' . str_replace('_', '-', $tool_id))); ?>">
+                        <?php echo esc_html($tool['name']); ?>
+                    </a>
+                    <br>
+                    <?php echo esc_html($tool['description']); ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 
     <hr />
