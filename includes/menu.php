@@ -66,6 +66,16 @@ class Admin_Menu {
             array($this, 'render_gutenberg_disabler')
         );
 
+        // Add Comments Disabler submenu
+        add_submenu_page(
+            'powertools',
+            __('Comments Disabler', 'powertools'),
+            __('Comments Disabler', 'powertools'),
+            'manage_options',
+            'powertools-comments-disabler',
+            array($this, 'render_comments_disabler')
+        );
+
         add_submenu_page(
             'powertools',
             __('Toolbar Toggler', 'powertools'),
@@ -127,6 +137,14 @@ class Admin_Menu {
     public function render_gutenberg_disabler() {
         $gutenberg_disabler = new \PowerTools\Gutenberg\Gutenberg_Disabler();
         $gutenberg_disabler->render_settings_page();
+    }
+
+    /**
+     * Render the comments disabler page
+     */
+    public function render_comments_disabler() {
+        $comments_disabler = new \PowerTools\Comments\Comments_Disabler();
+        $comments_disabler->render_settings_page();
     }
 
     /**

@@ -36,6 +36,7 @@ add_action('plugins_loaded', 'powertools_init');
 // Include required files
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/menu.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/gutenberg-disabler.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/comments-disabler.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/toolbar-toggler.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/html-junk-remover.php';
 require_once POWERTOOLS_PLUGIN_DIR . 'includes/junk-cleaner.php';
@@ -94,3 +95,9 @@ function powertools_init_system_info() {
     $system_info = new PowerTools\System\Info();
 }
 add_action('init', 'powertools_init_system_info');
+
+// Initialize comments disabler
+function powertools_init_comments_disabler() {
+    $comments_disabler = new PowerTools\Comments\Comments_Disabler();
+}
+add_action('init', 'powertools_init_comments_disabler');
