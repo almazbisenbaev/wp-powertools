@@ -1,97 +1,96 @@
 <?php
-/*
-Plugin Name: Power Tools
-Plugin URI: https://github.com/almazbisenbaev/wp-powertools
-Description: Useful WordPress utilities to solve common WordPress problems and maximize your productivity 
-Author: Almaz Bisenbaev
-Version: 0.1.1
-Requires at least: 6.0
-Tested up to: 6.7.1
-Text Domain: powertools
-Author URI: https://bruteforce.kz/
-*/
+/**
+ * Plugin Name: Power Tools
+ * Plugin URI: https://github.com/almazbisenbaev/wp-powertools
+ * Description: Useful WordPress utilities to solve common WordPress problems and maximize your productivity 
+ * Author: Almaz Bisenbaev
+ * Version: 0.1.1
+ * Requires at least: 6.0
+ * Tested up to: 6.7.1
+ * Text Domain: powertools
+ * Author URI: https://bruteforce.kz/
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * @package PowerTools
+ */
 
-
-// Menu items
-require_once plugin_dir_path( __FILE__ ) . 'includes/menu.php';
-add_action('admin_menu', 'powertools_setup_menu');
-
-
-
-// Tools
-require_once plugin_dir_path( __FILE__ ) . 'includes/gutenberg-disabler.php';
-add_action('init', 'powertools_disable_gutenberg');
-
-require_once plugin_dir_path( __FILE__ ) . 'includes/toolbar-toggler.php';
-add_action('wp_footer', 'powertools_toolbar_toggler');
-
-require_once plugin_dir_path( __FILE__ ) . 'includes/html-junk-remover.php';
-add_action('init', 'powertools_remove_html_junk');
-
-require_once plugin_dir_path( __FILE__ ) . 'includes/junk-cleaner.php';
-// add_action('init', 'powertools_junk_cleaner');
-
-require_once plugin_dir_path( __FILE__ ) . 'includes/cpt-manager.php';
-// add_action('init', 'powertools_junk_cleaner');
-
-require_once plugin_dir_path( __FILE__ ) . 'includes/system-info.php';
-
-
-
-
-// Enqueue styles and javascript
-
-function powertools_enqueue_styles() {
-
-    // CSS for dashboard
-    wp_enqueue_style('powertools-styles', plugin_dir_url(__FILE__) . 'admin/css/powertools-admin.css', array(), '0.1.3');
-
+// If this file is called directly, abort.
+if (!defined('WPINC')) {
+    die;
 }
 
-add_action('admin_enqueue_scripts', 'powertools_enqueue_styles');
+// Define plugin constants
+define('POWERTOOLS_VERSION', '0.1.1');
+define('POWERTOOLS_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('POWERTOOLS_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('POWERTOOLS_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
+// Initialize the plugin
+function powertools_init() {
+    // Load text domain for internationalization
+    load_plugin_textdomain('powertools', false, dirname(POWERTOOLS_PLUGIN_BASENAME) . '/languages');
+}
+add_action('plugins_loaded', 'powertools_init');
 
-// Homepage
+// Include required files
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/menu.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/gutenberg-disabler.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/toolbar-toggler.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/html-junk-remover.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/junk-cleaner.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/cpt-manager.php';
+require_once POWERTOOLS_PLUGIN_DIR . 'includes/system-info.php';
+
+// Register activation and deactivation hooks
+register_activation_hook(__FILE__, 'powertools_activate');
+register_deactivation_hook(__FILE__, 'powertools_deactivate');
+
+function powertools_activate() {
+    // Activation tasks
+    flush_rewrite_rules();
+}
+
+function powertools_deactivate() {
+    // Deactivation tasks
+    flush_rewrite_rules();
+}
+
+// Enqueue admin styles
+function powertools_enqueue_admin_styles() {
+    wp_enqueue_style(
+        'powertools-admin-styles',
+        POWERTOOLS_PLUGIN_URL . 'admin/css/powertools-admin.css',
+        array(),
+        POWERTOOLS_VERSION
+    );
+}
+add_action('admin_enqueue_scripts', 'powertools_enqueue_admin_styles');
+
+// Homepage content
 function powertools_homepage() {
-
-    echo '<div class="ptools-intro">';
-      echo '<div class="ptools-intro-logo"><img src="' . plugin_dir_url(__FILE__) . 'images/logo-icon.png"></div>';
-      echo '<div class="ptools-intro-content">';
-        echo '<h1 class="ptools-intro-title">Welcome to Power Tools!</h1>';
-        echo '<div class="ptools-intro-descr">Simple tools that solve common problems during WordPress development and maximize your productivity</div>';
-      echo '</div>';
-    echo '</div>';
-
-    echo '<div class="ptools-cards" style="margin: 30px 0;">';
-      echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools_cptm">CPT Manager</a>
-              <br>Easily create and manage custom post types
-            </div>';
-      echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools-toolbar-toggler">Admin Toolbar Toggler</a>
-              <br>Replaces the admin toolbar with a nice toggler button
-            </div>';
-      echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools-gutenberg-disabler">Gutenberg Disabler</a>
-              <br>Return the legacy editor for specific post types
-            </div>';
-      echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools-html-junk-remover">HTML Junk Remover</a>
-              <br>This tool removes the useless lines of code from HTML (such as WordPress version, emojis, etc.)
-            </div>';
-      echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools-junk-cleaner">Junk Cleaner</a>
-              <br>This tool lets you delete the drafts and revisions that are taking up your disc space
-            </div>';
-      echo '<div class="ptools-card">
-              <a href="/wp-admin/admin.php?page=powertools-system-info">System Info</a>
-              <br>View and export system info that can be useful for your IT guy or a tech support agent
-            </div>';
-    echo '</div>';
-
-    echo '<hr />';
-    echo '<div>Author: Almaz Bisenbaev (<a target="_blank" href="https://github.com/almazbisenbaev">https://github.com/almazbisenbaev</a>)</div>';
-    echo '<hr />';
-    echo '<div>Github repository: <a target="_blank" href="https://github.com/almazbisenbaev/wp-powertools">https://github.com/almazbisenbaev/wp-powertools</a></div>';
-
+    if (!current_user_can('manage_options')) {
+        wp_die(__('You do not have sufficient permissions to access this page.', 'powertools'));
+    }
+    
+    // Include the homepage template
+    require_once POWERTOOLS_PLUGIN_DIR . 'admin/views/homepage.php';
 }
+
+// Initialize admin menu
+function powertools_init_admin_menu() {
+    $admin_menu = new PowerTools\Admin\Admin_Menu();
+}
+add_action('plugins_loaded', 'powertools_init_admin_menu');
+
+// Initialize CPT manager
+function powertools_init_cpt_manager() {
+    $cpt_manager = new PowerTools\CPT\Manager();
+}
+add_action('init', 'powertools_init_cpt_manager');
+
+// Initialize system info
+function powertools_init_system_info() {
+    $system_info = new PowerTools\System\Info();
+}
+add_action('init', 'powertools_init_system_info');

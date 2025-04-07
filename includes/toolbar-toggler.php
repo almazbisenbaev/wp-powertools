@@ -1,56 +1,115 @@
 <?php
+/**
+ * Toolbar Toggler functionality
+ *
+ * @package PowerTools
+ */
 
-function powertools_toolbar_toggler_page() {
+namespace PowerTools\Toolbar;
 
-    if ( isset($_POST['save']) ) {
-
-        if( isset($_POST['enable_toolbar_toggler']) ){
-            update_option('powertools_toolbar_toggler_enabled', 1);
-        } else {
-            update_option('powertools_toolbar_toggler_enabled', 0);
-        }
-
-    }
-
-    $is_toolbar_toggler_enabled = get_option('powertools_toolbar_toggler_enabled');
-
-?>
-
-    <div class="ptools-settings">
-
-        <div class="ptools-settings-header">
-            <h2 class="ptools-settings-title">Toolbar Toggler</h2>
-            <div class="ptools-settings-descr">This setting with replace the admin toolbar with a nice toggler button</div>
-        </div>
-
-        <form class="ptools-metabox" method="post">
-
-            <label class="ptools-toggler" for="enable_toolbar_toggler">
-                <div class="ptools-toggler-input">
-                    <input type="checkbox" id="enable_toolbar_toggler" name="enable_toolbar_toggler" <?php checked(1, $is_toolbar_toggler_enabled); ?> />
-                </div>
-                <div class="ptools-toggler-content">
-                    <div>Enable Toolbar Toggler Button</div>
-                </div>
-            </label>
-
-            <div class="ptools-metabox-footer">
-                <input type="submit" name="save" value="Save Changes" class="button-primary">
-            </div>
-
-        </form>
-
-    </div>
-
-<?php
+// If this file is called directly, abort.
+if (!defined('WPINC')) {
+    die;
 }
 
-function powertools_toolbar_toggler() {
+/**
+ * Class Toolbar_Toggler
+ */
+class Toolbar_Toggler {
+    /**
+     * Option name for storing toolbar toggler settings
+     *
+     * @var string
+     */
+    private const OPTION_NAME = 'powertools_toolbar_toggler_enabled';
 
-    $is_toolbar_toggler_enabled = get_option('powertools_toolbar_toggler_enabled');
+    /**
+     * Initialize the class
+     */
+    public function __construct() {
+        add_action('wp_footer', array($this, 'maybe_add_toolbar_toggler'));
+    }
 
-    if ($is_toolbar_toggler_enabled == 1) { ?>
+    /**
+     * Render the toolbar toggler settings page
+     */
+    public function render_settings_page() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'powertools'));
+        }
 
+        // Handle form submission
+        if (isset($_POST['save']) && check_admin_referer('powertools_toolbar_toggler')) {
+            $this->save_settings();
+        }
+
+        $is_toolbar_toggler_enabled = get_option(self::OPTION_NAME);
+        ?>
+        <div class="ptools-settings">
+            <div class="ptools-settings-header">
+                <h2 class="ptools-settings-title"><?php esc_html_e('Toolbar Toggler', 'powertools'); ?></h2>
+                <div class="ptools-settings-descr">
+                    <?php esc_html_e('This setting will replace the admin toolbar with a nice toggler button', 'powertools'); ?>
+                </div>
+            </div>
+
+            <form class="ptools-metabox" method="post">
+                <?php wp_nonce_field('powertools_toolbar_toggler'); ?>
+
+                <label class="ptools-toggler" for="enable_toolbar_toggler">
+                    <div class="ptools-toggler-input">
+                        <input type="checkbox" 
+                               id="enable_toolbar_toggler" 
+                               name="enable_toolbar_toggler" 
+                               <?php checked(1, $is_toolbar_toggler_enabled); ?> />
+                    </div>
+                    <div class="ptools-toggler-content">
+                        <div><?php esc_html_e('Enable Toolbar Toggler Button', 'powertools'); ?></div>
+                    </div>
+                </label>
+
+                <div class="ptools-metabox-footer">
+                    <input type="submit" 
+                           name="save" 
+                           value="<?php esc_attr_e('Save Changes', 'powertools'); ?>" 
+                           class="button-primary">
+                </div>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Save the toolbar toggler settings
+     */
+    private function save_settings() {
+        $is_enabled = isset($_POST['enable_toolbar_toggler']) ? 1 : 0;
+        update_option(self::OPTION_NAME, $is_enabled);
+        
+        add_settings_error(
+            'powertools_messages',
+            'powertools_message',
+            __('Settings Saved', 'powertools'),
+            'updated'
+        );
+    }
+
+    /**
+     * Add the toolbar toggler if enabled
+     */
+    public function maybe_add_toolbar_toggler() {
+        if (get_option(self::OPTION_NAME) !== '1') {
+            return;
+        }
+
+        $this->add_toolbar_toggler();
+    }
+
+    /**
+     * Add the toolbar toggler HTML, CSS, and JavaScript
+     */
+    private function add_toolbar_toggler() {
+        ?>
         <style>
             html {
                 margin-top: 0 !important;
@@ -89,7 +148,10 @@ function powertools_toolbar_toggler() {
                 });
             });
         </script>
-
-    <?php }
+        <?php
+    }
 }
+
+// Initialize the class
+$toolbar_toggler = new Toolbar_Toggler();
 

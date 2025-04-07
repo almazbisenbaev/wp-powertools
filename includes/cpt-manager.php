@@ -1,33 +1,42 @@
 <?php
+/**
+ * CPT Manager functionality
+ *
+ * @package PowerTools
+ */
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+namespace PowerTools\CPT;
+
+// If this file is called directly, abort.
+if (!defined('WPINC')) {
+    die;
 }
 
-
-class CustomPostTypeManager {
+/**
+ * Class Manager
+ */
+class Manager {
+    /**
+     * Option name for storing custom post types
+     *
+     * @var string
+     */
     private $option_name = 'powertools_cptm_custom_post_types';
 
+    /**
+     * Initialize the class
+     */
     public function __construct() {
-        add_action('admin_menu', [$this, 'add_admin_menu']);
-        add_action('init', [$this, 'register_custom_post_types']);
-        add_action('admin_post_powertools_cptm_add', [$this, 'handle_add_post_type']);
-        add_action('admin_post_powertools_cptm_edit', [$this, 'handle_edit_post_type']);
-        add_action('admin_post_powertools_cptm_delete', [$this, 'handle_delete_post_type']);
+        add_action('init', array($this, 'register_custom_post_types'));
+        add_action('admin_post_powertools_cptm_add', array($this, 'handle_add_post_type'));
+        add_action('admin_post_powertools_cptm_edit', array($this, 'handle_edit_post_type'));
+        add_action('admin_post_powertools_cptm_delete', array($this, 'handle_delete_post_type'));
     }
 
-    public function add_admin_menu() {
-        add_submenu_page(
-            'powertools',
-            'CPT Manager',
-            'Custom Post Types Manager',
-            'manage_options',
-            'powertools_cptm',
-            [$this, 'settings_page'],
-        );
-    }
-
-    public function settings_page() {
+    /**
+     * Render settings page
+     */
+    public function render_settings_page() {
         $custom_post_types = get_option($this->option_name, []);
         $edit_mode = isset($_GET['edit']) ? sanitize_text_field($_GET['edit']) : '';
 
@@ -37,7 +46,7 @@ class CustomPostTypeManager {
         ?>
 
         <div class="wrap">
-            <h1>Custom Post Type Manager</h1>
+            <h1><?php esc_html_e('Custom Post Type Manager', 'powertools'); ?></h1>
 
             <?php if (isset($_GET['error_message'])): ?>
                 <div class="notice notice-error is-dismissible">
@@ -51,250 +60,277 @@ class CustomPostTypeManager {
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="<?php echo $edit_mode ? 'powertools_cptm_edit' : 'powertools_cptm_add'; ?>">
                 <?php wp_nonce_field($edit_mode ? 'powertools_cptm_edit_nonce_action' : 'powertools_cptm_add_nonce_action', $edit_mode ? 'powertools_cptm_edit_nonce' : 'powertools_cptm_add_nonce'); ?>
                 <table class="form-table">
                     <tr valign="top">
-                        <th scope="row">Post Type Name</th>
+                        <th scope="row"><?php esc_html_e('Post Type Name', 'powertools'); ?></th>
                         <td><input type="text" name="powertools_cptm_post_type_name" value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['name']) : ''; ?>" <?php echo $edit_mode ? 'readonly' : 'required'; ?> /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Singular Label</th>
+                        <th scope="row"><?php esc_html_e('Singular Label', 'powertools'); ?></th>
                         <td><input type="text" name="powertools_cptm_singular_label" value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['singular_label']) : ''; ?>" required /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Plural Label</th>
+                        <th scope="row"><?php esc_html_e('Plural Label', 'powertools'); ?></th>
                         <td><input type="text" name="powertools_cptm_plural_label" value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['plural_label']) : ''; ?>" required /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Public</th>
+                        <th scope="row"><?php esc_html_e('Public', 'powertools'); ?></th>
                         <td><input type="checkbox" name="powertools_cptm_public" value="1" <?php checked($edit_mode ? $custom_post_types[$edit_mode]['public'] : true); ?> /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Has Archive</th>
+                        <th scope="row"><?php esc_html_e('Has Archive', 'powertools'); ?></th>
                         <td><input type="checkbox" name="powertools_cptm_has_archive" value="1" <?php checked($edit_mode ? $custom_post_types[$edit_mode]['has_archive'] : true); ?> /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Hierarchical</th>
+                        <th scope="row"><?php esc_html_e('Hierarchical', 'powertools'); ?></th>
                         <td><input type="checkbox" name="powertools_cptm_hierarchical" value="1" <?php checked($edit_mode && isset($custom_post_types[$edit_mode]['hierarchical']) ? $custom_post_types[$edit_mode]['hierarchical'] : false); ?> /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Menu Position</th>
+                        <th scope="row"><?php esc_html_e('Menu Position', 'powertools'); ?></th>
                         <td><input type="number" name="powertools_cptm_menu_position" value="<?php echo $edit_mode && isset($custom_post_types[$edit_mode]['menu_position']) ? esc_attr($custom_post_types[$edit_mode]['menu_position']) : ''; ?>" /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Menu Icon</th>
+                        <th scope="row"><?php esc_html_e('Menu Icon', 'powertools'); ?></th>
                         <td><input type="text" name="powertools_cptm_menu_icon" value="<?php echo $edit_mode && isset($custom_post_types[$edit_mode]['menu_icon']) ? esc_attr($custom_post_types[$edit_mode]['menu_icon']) : ''; ?>" placeholder="dashicons-admin-post" /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Supports</th>
+                        <th scope="row"><?php esc_html_e('Supports', 'powertools'); ?></th>
                         <td>
                             <?php
                             $supports = $edit_mode && isset($custom_post_types[$edit_mode]['supports']) ? $custom_post_types[$edit_mode]['supports'] : ['title', 'editor', 'thumbnail'];
                             $support_options = ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'];
                             foreach ($support_options as $option) {
-                                echo '<label><input type="checkbox" name="powertools_cptm_supports[]" value="' . esc_attr($option) . '" ' . (in_array($option, $supports) ? 'checked' : '') . ' /> ' . ucfirst($option) . '</label><br>';
+                                echo '<label><input type="checkbox" name="powertools_cptm_supports[]" value="' . esc_attr($option) . '" ' . (in_array($option, $supports) ? 'checked' : '') . ' /> ' . esc_html(ucfirst($option)) . '</label><br>';
                             }
                             ?>
                         </td>
                     </tr>
                 </table>
-                <?php submit_button($edit_mode ? 'Update Custom Post Type' : 'Add Custom Post Type'); ?>
+                <p class="submit">
+                    <input type="submit" class="button-primary" value="<?php echo $edit_mode ? esc_attr__('Update Post Type', 'powertools') : esc_attr__('Add Post Type', 'powertools'); ?>" />
+                </p>
             </form>
 
-            <h2>Existing Custom Post Types</h2>
-
-            <table class="widefat">
+            <h2><?php esc_html_e('Existing Custom Post Types', 'powertools'); ?></h2>
+            <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th>Post Type</th>
-                        <th>Singular Label</th>
-                        <th>Plural Label</th>
-                        <th>Public</th>
-                        <th>Has Archive</th>
-                        <th>Hierarchical</th>
-                        <th>Menu Position</th>
-                        <th>Menu Icon</th>
-                        <th>Supports</th>
-                        <th>Actions</th>
+                        <th><?php esc_html_e('Name', 'powertools'); ?></th>
+                        <th><?php esc_html_e('Singular Label', 'powertools'); ?></th>
+                        <th><?php esc_html_e('Plural Label', 'powertools'); ?></th>
+                        <th><?php esc_html_e('Actions', 'powertools'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($custom_post_types as $cpt) : ?>
-                    <tr>
-                        <td><?php echo esc_html($cpt['name']); ?></td>
-                        <td><?php echo esc_html($cpt['singular_label']); ?></td>
-                        <td><?php echo esc_html($cpt['plural_label']); ?></td>
-                        <td><?php echo $cpt['public'] ? 'Yes' : 'No'; ?></td>
-                        <td><?php echo $cpt['has_archive'] ? 'Yes' : 'No'; ?></td>
-                        <td><?php echo isset($cpt['hierarchical']) && $cpt['hierarchical'] ? 'Yes' : 'No'; ?></td>
-                        <td><?php echo isset($cpt['menu_position']) ? esc_html($cpt['menu_position']) : ''; ?></td>
-                        <td><?php echo isset($cpt['menu_icon']) ? esc_html($cpt['menu_icon']) : ''; ?></td>
-                        <td><?php echo isset($cpt['supports']) ? esc_html(implode(', ', $cpt['supports'])) : ''; ?></td>
-                        <td>
-                            <a href="<?php echo add_query_arg(['page' => 'powertools_cptm', 'edit' => $cpt['name']], admin_url('admin.php')); ?>" class="button">Edit</a>
-                            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="display:inline;">
-                                <input type="hidden" name="action" value="powertools_cptm_delete">
-                                <?php wp_nonce_field('powertools_cptm_delete_nonce_action', 'powertools_cptm_delete_nonce'); ?>
-                                <input type="hidden" name="powertools_cptm_post_type_name" value="<?php echo esc_attr($cpt['name']); ?>" />
-                                <?php submit_button('Delete', 'delete', 'submit', false); ?>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
+                    <?php if (empty($custom_post_types)): ?>
+                        <tr>
+                            <td colspan="4"><?php esc_html_e('No custom post types found.', 'powertools'); ?></td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($custom_post_types as $post_type => $data): ?>
+                            <tr>
+                                <td><?php echo esc_html($post_type); ?></td>
+                                <td><?php echo esc_html($data['singular_label']); ?></td>
+                                <td><?php echo esc_html($data['plural_label']); ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(add_query_arg('edit', $post_type)); ?>" class="button"><?php esc_html_e('Edit', 'powertools'); ?></a>
+                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline;">
+                                        <input type="hidden" name="action" value="powertools_cptm_delete">
+                                        <input type="hidden" name="powertools_cptm_post_type" value="<?php echo esc_attr($post_type); ?>">
+                                        <?php wp_nonce_field('powertools_cptm_delete_nonce_action', 'powertools_cptm_delete_nonce'); ?>
+                                        <button type="submit" class="button" onclick="return confirm('<?php esc_attr_e('Are you sure you want to delete this post type?', 'powertools'); ?>');"><?php esc_html_e('Delete', 'powertools'); ?></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
         <?php
     }
 
+    /**
+     * Handle add post type
+     */
     public function handle_add_post_type() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'powertools'));
+        }
+
         if (!isset($_POST['powertools_cptm_add_nonce']) || !wp_verify_nonce($_POST['powertools_cptm_add_nonce'], 'powertools_cptm_add_nonce_action')) {
-            $this->redirect_with_error('Nonce verification failed for adding post type.');
+            $this->redirect_with_error(__('Security check failed.', 'powertools'));
         }
 
-        $custom_post_types = get_option($this->option_name, []);
-        if (!is_array($custom_post_types)) {
-            $custom_post_types = [];
-        }
-
-        $name = sanitize_text_field($_POST['powertools_cptm_post_type_name']);
+        $post_type_name = sanitize_key($_POST['powertools_cptm_post_type_name']);
         $singular_label = sanitize_text_field($_POST['powertools_cptm_singular_label']);
         $plural_label = sanitize_text_field($_POST['powertools_cptm_plural_label']);
-        $public = isset($_POST['powertools_cptm_public']) ? true : false;
-        $has_archive = isset($_POST['powertools_cptm_has_archive']) ? true : false;
-        $hierarchical = isset($_POST['powertools_cptm_hierarchical']) ? true : false;
-        $menu_position = !empty($_POST['powertools_cptm_menu_position']) ? intval($_POST['powertools_cptm_menu_position']) : null;
-        $menu_icon = !empty($_POST['powertools_cptm_menu_icon']) ? sanitize_text_field($_POST['powertools_cptm_menu_icon']) : 'dashicons-admin-post';
-        $supports = isset($_POST['powertools_cptm_supports']) ? array_map('sanitize_text_field', $_POST['powertools_cptm_supports']) : ['title', 'editor', 'thumbnail'];
+        $public = isset($_POST['powertools_cptm_public']);
+        $has_archive = isset($_POST['powertools_cptm_has_archive']);
+        $hierarchical = isset($_POST['powertools_cptm_hierarchical']);
+        $menu_position = isset($_POST['powertools_cptm_menu_position']) ? intval($_POST['powertools_cptm_menu_position']) : null;
+        $menu_icon = isset($_POST['powertools_cptm_menu_icon']) ? sanitize_text_field($_POST['powertools_cptm_menu_icon']) : '';
+        $supports = isset($_POST['powertools_cptm_supports']) ? array_map('sanitize_text_field', $_POST['powertools_cptm_supports']) : array('title', 'editor');
 
-        if (!empty($name) && !empty($singular_label) && !empty($plural_label)) {
-            $custom_post_types[$name] = [
-                'name' => $name,
-                'singular_label' => $singular_label,
-                'plural_label' => $plural_label,
-                'public' => $public,
-                'has_archive' => $has_archive,
-                'hierarchical' => $hierarchical,
-                'menu_position' => $menu_position,
-                'menu_icon' => $menu_icon,
-                'supports' => $supports,
-            ];
-            update_option($this->option_name, $custom_post_types);
-            $this->redirect_with_success('Custom Post Type added successfully.');
-        } else {
-            $this->redirect_with_error('Please fill in all required fields.');
+        if (empty($post_type_name) || empty($singular_label) || empty($plural_label)) {
+            $this->redirect_with_error(__('All required fields must be filled.', 'powertools'));
         }
+
+        $custom_post_types = get_option($this->option_name, array());
+        $custom_post_types[$post_type_name] = array(
+            'name' => $post_type_name,
+            'singular_label' => $singular_label,
+            'plural_label' => $plural_label,
+            'public' => $public,
+            'has_archive' => $has_archive,
+            'hierarchical' => $hierarchical,
+            'menu_position' => $menu_position,
+            'menu_icon' => $menu_icon,
+            'supports' => $supports
+        );
+
+        update_option($this->option_name, $custom_post_types);
+        $this->redirect_with_success(__('Custom post type added successfully.', 'powertools'));
     }
 
+    /**
+     * Handle edit post type
+     */
     public function handle_edit_post_type() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'powertools'));
+        }
+
         if (!isset($_POST['powertools_cptm_edit_nonce']) || !wp_verify_nonce($_POST['powertools_cptm_edit_nonce'], 'powertools_cptm_edit_nonce_action')) {
-            $this->redirect_with_error('Nonce verification failed for editing post type.');
+            $this->redirect_with_error(__('Security check failed.', 'powertools'));
         }
 
-        $custom_post_types = get_option($this->option_name, []);
-        if (!is_array($custom_post_types)) {
-            $custom_post_types = [];
-        }
-
-        $name = sanitize_text_field($_POST['powertools_cptm_post_type_name']);
+        $post_type_name = sanitize_key($_POST['powertools_cptm_post_type_name']);
         $singular_label = sanitize_text_field($_POST['powertools_cptm_singular_label']);
         $plural_label = sanitize_text_field($_POST['powertools_cptm_plural_label']);
-        $public = isset($_POST['powertools_cptm_public']) ? true : false;
-        $has_archive = isset($_POST['powertools_cptm_has_archive']) ? true : false;
-        $hierarchical = isset($_POST['powertools_cptm_hierarchical']) ? true : false;
-        $menu_position = !empty($_POST['powertools_cptm_menu_position']) ? intval($_POST['powertools_cptm_menu_position']) : null;
-        $menu_icon = !empty($_POST['powertools_cptm_menu_icon']) ? sanitize_text_field($_POST['powertools_cptm_menu_icon']) : 'dashicons-admin-post';
-        $supports = isset($_POST['powertools_cptm_supports']) ? array_map('sanitize_text_field', $_POST['powertools_cptm_supports']) : ['title', 'editor', 'thumbnail'];
+        $public = isset($_POST['powertools_cptm_public']);
+        $has_archive = isset($_POST['powertools_cptm_has_archive']);
+        $hierarchical = isset($_POST['powertools_cptm_hierarchical']);
+        $menu_position = isset($_POST['powertools_cptm_menu_position']) ? intval($_POST['powertools_cptm_menu_position']) : null;
+        $menu_icon = isset($_POST['powertools_cptm_menu_icon']) ? sanitize_text_field($_POST['powertools_cptm_menu_icon']) : '';
+        $supports = isset($_POST['powertools_cptm_supports']) ? array_map('sanitize_text_field', $_POST['powertools_cptm_supports']) : array('title', 'editor');
 
-        if (!empty($name) && !empty($singular_label) && !empty($plural_label)) {
-            $custom_post_types[$name] = [
-                'name' => $name,
-                'singular_label' => $singular_label,
-                'plural_label' => $plural_label,
-                'public' => $public,
-                'has_archive' => $has_archive,
-                'hierarchical' => $hierarchical,
-                'menu_position' => $menu_position,
-                'menu_icon' => $menu_icon,
-                'supports' => $supports,
-            ];
-            update_option($this->option_name, $custom_post_types);
-            $this->redirect_with_success('Custom Post Type updated successfully.');
-        } else {
-            $this->redirect_with_error('Please fill in all required fields.');
+        if (empty($post_type_name) || empty($singular_label) || empty($plural_label)) {
+            $this->redirect_with_error(__('All required fields must be filled.', 'powertools'));
         }
+
+        $custom_post_types = get_option($this->option_name, array());
+        if (!isset($custom_post_types[$post_type_name])) {
+            $this->redirect_with_error(__('Post type not found.', 'powertools'));
+        }
+
+        $custom_post_types[$post_type_name] = array(
+            'name' => $post_type_name,
+            'singular_label' => $singular_label,
+            'plural_label' => $plural_label,
+            'public' => $public,
+            'has_archive' => $has_archive,
+            'hierarchical' => $hierarchical,
+            'menu_position' => $menu_position,
+            'menu_icon' => $menu_icon,
+            'supports' => $supports
+        );
+
+        update_option($this->option_name, $custom_post_types);
+        $this->redirect_with_success(__('Custom post type updated successfully.', 'powertools'));
     }
 
-
+    /**
+     * Handle delete post type
+     */
     public function handle_delete_post_type() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'powertools'));
+        }
+
         if (!isset($_POST['powertools_cptm_delete_nonce']) || !wp_verify_nonce($_POST['powertools_cptm_delete_nonce'], 'powertools_cptm_delete_nonce_action')) {
-            $this->redirect_with_error('Nonce verification failed for deleting post type.');
+            $this->redirect_with_error(__('Security check failed.', 'powertools'));
         }
 
-        $custom_post_types = get_option($this->option_name, []);
-        if (!is_array($custom_post_types)) {
-            $custom_post_types = [];
+        $post_type = sanitize_key($_POST['powertools_cptm_post_type']);
+        $custom_post_types = get_option($this->option_name, array());
+
+        if (!isset($custom_post_types[$post_type])) {
+            $this->redirect_with_error(__('Post type not found.', 'powertools'));
         }
 
-        $name = sanitize_text_field($_POST['powertools_cptm_post_type_name']);
-
-        if (isset($custom_post_types[$name])) {
-            unset($custom_post_types[$name]);
-            update_option($this->option_name, $custom_post_types);
-            $this->redirect_with_success('Custom Post Type deleted successfully.');
-        } else {
-            $this->redirect_with_error('Custom Post Type not found.');
-        }
+        unset($custom_post_types[$post_type]);
+        update_option($this->option_name, $custom_post_types);
+        $this->redirect_with_success(__('Custom post type deleted successfully.', 'powertools'));
     }
 
+    /**
+     * Redirect with error
+     *
+     * @param string $error_message Error message
+     */
     private function redirect_with_error($error_message) {
-        $redirect_url = add_query_arg([
-            'page' => 'powertools_cptm',
-            'error_message' => urlencode($error_message)
-        ], admin_url('admin.php'));
-        wp_redirect($redirect_url);
+        wp_redirect(add_query_arg('error_message', urlencode($error_message), admin_url('admin.php?page=powertools-cpt-manager')));
         exit;
     }
 
+    /**
+     * Redirect with success
+     *
+     * @param string $success_message Success message
+     */
     private function redirect_with_success($success_message) {
-        $redirect_url = add_query_arg([
-            'page' => 'powertools_cptm',
-            'success_message' => urlencode($success_message)
-        ], admin_url('admin.php'));
-        wp_redirect($redirect_url);
+        wp_redirect(add_query_arg('success_message', urlencode($success_message), admin_url('admin.php?page=powertools-cpt-manager')));
         exit;
     }
 
+    /**
+     * Register custom post types
+     */
     public function register_custom_post_types() {
-        $custom_post_types = get_option($this->option_name, []);
+        $custom_post_types = get_option($this->option_name, array());
 
-        if (!is_array($custom_post_types)) {
-            $custom_post_types = [];
-        }
+        foreach ($custom_post_types as $post_type => $data) {
+            $labels = array(
+                'name'               => $data['plural_label'],
+                'singular_name'      => $data['singular_label'],
+                'menu_name'          => $data['plural_label'],
+                'add_new'            => __('Add New', 'powertools'),
+                'add_new_item'       => sprintf(__('Add New %s', 'powertools'), $data['singular_label']),
+                'edit_item'          => sprintf(__('Edit %s', 'powertools'), $data['singular_label']),
+                'new_item'           => sprintf(__('New %s', 'powertools'), $data['singular_label']),
+                'view_item'          => sprintf(__('View %s', 'powertools'), $data['singular_label']),
+                'search_items'       => sprintf(__('Search %s', 'powertools'), $data['plural_label']),
+                'not_found'          => sprintf(__('No %s found', 'powertools'), $data['plural_label']),
+                'not_found_in_trash' => sprintf(__('No %s found in Trash', 'powertools'), $data['plural_label']),
+            );
 
-        foreach ($custom_post_types as $cpt) {
-            $args = [
-                'label' => $cpt['plural_label'],
-                'labels' => [
-                    'name' => $cpt['plural_label'],
-                    'singular_name' => $cpt['singular_label'],
-                ],
-                'public' => $cpt['public'],
-                'has_archive' => $cpt['has_archive'],
-                'hierarchical' => isset($cpt['hierarchical']) ? $cpt['hierarchical'] : false,
-                'menu_position' => isset($cpt['menu_position']) ? $cpt['menu_position'] : null,
-                'menu_icon' => isset($cpt['menu_icon']) ? $cpt['menu_icon'] : 'dashicons-admin-post',
-                'supports' => isset($cpt['supports']) ? $cpt['supports'] : ['title', 'editor', 'thumbnail'],
-                'show_ui' => true,
-                'show_in_menu' => true,
-            ];
-            register_post_type($cpt['name'], $args);
+            $args = array(
+                'labels'              => $labels,
+                'public'              => $data['public'],
+                'has_archive'         => $data['has_archive'],
+                'hierarchical'        => $data['hierarchical'],
+                'menu_position'       => $data['menu_position'],
+                'menu_icon'           => $data['menu_icon'],
+                'supports'            => $data['supports'],
+                'show_in_menu'        => true,
+                'show_in_admin_bar'   => true,
+                'show_in_nav_menus'   => true,
+                'can_export'          => true,
+                'has_archive'         => true,
+                'exclude_from_search' => false,
+                'publicly_queryable'  => true,
+                'capability_type'     => 'post',
+                'show_in_rest'        => true,
+            );
+
+            register_post_type($post_type, $args);
         }
     }
-
 }
 
-// Initialize the plugin
-$cpt_manager = new CustomPostTypeManager();
+// Initialize the class
+$cpt_manager = new Manager();

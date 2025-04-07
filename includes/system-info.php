@@ -1,177 +1,161 @@
 <?php
+/**
+ * System Info functionality
+ *
+ * @package PowerTools
+ */
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+namespace PowerTools\System;
+
+// If this file is called directly, abort.
+if (!defined('WPINC')) {
+    die;
 }
 
-class PowertoolsSystemInfo {
-
+/**
+ * Class Info
+ */
+class Info {
+    /**
+     * Initialize the class
+     */
     public function __construct() {
-
-        // Hook into the admin menu.
-        add_action('admin_menu', [$this, 'add_admin_menu']);
-
+        // No initialization needed
     }
 
-
-    public function add_admin_menu() {
-
-        add_submenu_page(
-            'powertools',
-            'System Info',
-            'System Info',
-            'manage_options',
-            'powertools_system_info',
-            [$this, 'powertools_system_info_page'],
-        );
-
-    }
-
-
-
-    public function powertools_system_info_page() { 
+    /**
+     * Render the system info page
+     */
+    public function render_settings_page() {
         global $wpdb;
-    ?>
-    
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'powertools'));
+        }
+        ?>
         <div class="ptools-settings">
-    
-            <h2 class="ptools-settings-title">System info</h2>
-    
+            <h2 class="ptools-settings-title"><?php esc_html_e('System Info', 'powertools'); ?></h2>
+
             <div class="ptools-metabox">
                 <table class="wp-list-table widefat fixed striped">
-    
                     <tr>
-                        <td><strong>Site URL:</strong></td>
-                        <td><?php echo get_bloginfo('url'); ?></td>
+                        <td><strong><?php esc_html_e('Site URL:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_url(get_bloginfo('url')); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Home URL:</strong></td>
-                        <td><?php echo get_bloginfo('wpurl'); ?></td>
+                        <td><strong><?php esc_html_e('Home URL:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_url(get_bloginfo('wpurl')); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>WP language:</strong></td>
-                        <td><?php echo get_bloginfo('language'); ?></td>
+                        <td><strong><?php esc_html_e('WP language:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html(get_bloginfo('language')); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Active theme:</strong></td>
-                        <td><?php echo wp_get_theme(); ?></td>
-                    </tr>
-    
-                    <tr>
-                        <td><strong>WordPress version:</strong></td>
-                        <td><?php bloginfo('version'); ?></td>
+                        <td><strong><?php esc_html_e('Active theme:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html(wp_get_theme()); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Server Software:</strong></td>
-                        <td><?php echo $_SERVER['SERVER_SOFTWARE']; ?></td>
+                        <td><strong><?php esc_html_e('WordPress version:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html(get_bloginfo('version')); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>PHP Version:</strong></td>
-                        <td><?php echo phpversion(); ?></td>
+                        <td><strong><?php esc_html_e('Server Software:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html($_SERVER['SERVER_SOFTWARE']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>MySQL version:</strong></td>
-                        <td><?php echo $wpdb->db_version(); ?></td>
+                        <td><strong><?php esc_html_e('PHP Version:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html(phpversion()); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Server IP:</strong></td>
-                        <td><?php echo $_SERVER['SERVER_ADDR']; ?></td>
+                        <td><strong><?php esc_html_e('MySQL version:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html($wpdb->db_version()); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Server name:</strong></td>
-                        <td><?php echo $_SERVER['SERVER_NAME']; ?></td>
+                        <td><strong><?php esc_html_e('Server IP:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html($_SERVER['SERVER_ADDR']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Server port:</strong></td>
-                        <td><?php echo $_SERVER['SERVER_PORT']; ?></td>
+                        <td><strong><?php esc_html_e('Server name:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html($_SERVER['SERVER_NAME']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Document root:</strong></td>
-                        <td><?php echo $_SERVER['DOCUMENT_ROOT']; ?></td>
+                        <td><strong><?php esc_html_e('Server port:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html($_SERVER['SERVER_PORT']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php esc_html_e('Document root:', 'powertools'); ?></strong></td>
+                        <td><?php echo esc_html($_SERVER['DOCUMENT_ROOT']); ?></td>
                     </tr>
                 </table>
-    
-                <div class="wrap">
-                    <h2>PHP Configuration</h2>
-                    <table class="wp-list-table widefat fixed striped">
-                        <tr>
-                            <td>Max Execution Time:</td>
-                            <td><?php echo ini_get('max_execution_time') . ' seconds'; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Memory Limit:</td>
-                            <td><?php echo ini_get('memory_limit'); ?></td>
-                        </tr>
-                        <tr>
-                            <td>Upload Max Filesize:</td>
-                            <td><?php echo ini_get('upload_max_filesize'); ?></td>
-                        </tr>
-                    </table>
-                </div>
-    
-                <div class="wrap">
-                    <h2>Server Resources</h2>
-                    <table class="wp-list-table widefat fixed striped">
-                        <tr>
-                            <td>Available Disk Space:</td>
-                            <td><?php echo round(disk_free_space('/') / (1024 * 1024), 2) . ' MB'; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Total Disk Space:</td>
-                            <td><?php echo round(disk_total_space('/') / (1024 * 1024), 2) . ' MB'; ?></td>
-                        </tr>
-                    </table>
-                </div>
-    
-                <?php
-    
-                    if (!current_user_can('manage_options')) {
-                        echo __('You do not have sufficient permissions to access this page.');
-                    } else {
-    
-                        // Get all plugins
-                        $all_plugins = get_plugins();
-                        $active_plugins = get_option('active_plugins');
-    
-                        echo '<div class="wrap">';
-                        echo '<h2>Installed Plugins</h2>';
-                        echo '<table class="wp-list-table widefat fixed striped">';
-                        echo '<thead><tr><th>Name</th><th>Status</th><th>Version</th><th>URL</th></tr></thead>';
-                        echo '<tbody>';
-    
-                        foreach ($all_plugins as $path => $plugin) {
-                            // Check if the plugin is active
-                            $status = in_array($path, $active_plugins) ? 'Active' : 'Disabled';
-                            $url = isset($plugin['PluginURI']) ? $plugin['PluginURI'] : 'N/A';
-    
-                            echo '<tr>';
-                            echo '<td>' . esc_html($plugin['Name']) . '</td>';
-                            echo '<td>' . esc_html($status) . '</td>';
-                            echo '<td>' . esc_html($plugin['Version']) . '</td>';
-                            echo '<td>' . esc_url($url) . '</td>';
-                            echo '</tr>';
-                        }
-    
-                        echo '</tbody>';
-                        echo '</table>';
-                        echo '</div>';
-    
-                    }
-    
-                ?>
-    
-            </div>
-    
-        </div>
-    
-    <?php
-    }
-    
 
+                <div class="wrap">
+                    <h2><?php esc_html_e('PHP Configuration', 'powertools'); ?></h2>
+                    <table class="wp-list-table widefat fixed striped">
+                        <tr>
+                            <td><?php esc_html_e('Max Execution Time:', 'powertools'); ?></td>
+                            <td><?php echo esc_html(ini_get('max_execution_time')) . ' ' . esc_html__('seconds', 'powertools'); ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Memory Limit:', 'powertools'); ?></td>
+                            <td><?php echo esc_html(ini_get('memory_limit')); ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Upload Max Filesize:', 'powertools'); ?></td>
+                            <td><?php echo esc_html(ini_get('upload_max_filesize')); ?></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="wrap">
+                    <h2><?php esc_html_e('Server Resources', 'powertools'); ?></h2>
+                    <table class="wp-list-table widefat fixed striped">
+                        <tr>
+                            <td><?php esc_html_e('Available Disk Space:', 'powertools'); ?></td>
+                            <td><?php echo esc_html(round(disk_free_space('/') / (1024 * 1024), 2)) . ' ' . esc_html__('MB', 'powertools'); ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Total Disk Space:', 'powertools'); ?></td>
+                            <td><?php echo esc_html(round(disk_total_space('/') / (1024 * 1024), 2)) . ' ' . esc_html__('MB', 'powertools'); ?></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <?php
+                // Get all plugins
+                $all_plugins = get_plugins();
+                $active_plugins = get_option('active_plugins');
+
+                echo '<div class="wrap">';
+                echo '<h2>' . esc_html__('Installed Plugins', 'powertools') . '</h2>';
+                echo '<table class="wp-list-table widefat fixed striped">';
+                echo '<thead><tr><th>' . esc_html__('Name', 'powertools') . '</th><th>' . esc_html__('Status', 'powertools') . '</th><th>' . esc_html__('Version', 'powertools') . '</th><th>' . esc_html__('URL', 'powertools') . '</th></tr></thead>';
+                echo '<tbody>';
+
+                foreach ($all_plugins as $path => $plugin) {
+                    // Check if the plugin is active
+                    $status = in_array($path, $active_plugins) ? __('Active', 'powertools') : __('Disabled', 'powertools');
+                    $url = isset($plugin['PluginURI']) ? $plugin['PluginURI'] : 'N/A';
+
+                    echo '<tr>';
+                    echo '<td>' . esc_html($plugin['Name']) . '</td>';
+                    echo '<td>' . esc_html($status) . '</td>';
+                    echo '<td>' . esc_html($plugin['Version']) . '</td>';
+                    echo '<td>' . esc_url($url) . '</td>';
+                    echo '</tr>';
+                }
+
+                echo '</tbody>';
+                echo '</table>';
+                echo '</div>';
+                ?>
+            </div>
+        </div>
+        <?php
+    }
 }
 
-
-$system_info_module = new PowertoolsSystemInfo();
+// Initialize the class
+$system_info = new Info();
 
 
 
