@@ -95,10 +95,10 @@ class Toolbar_Toggler {
     }
 
     /**
-     * Add the toolbar toggler if enabled
+     * Add the toolbar toggler if enabled and user is admin
      */
     public function maybe_add_toolbar_toggler() {
-        if (get_option(self::OPTION_NAME) !== '1') {
+        if (!current_user_can('manage_options') || get_option(self::OPTION_NAME) !== '1') {
             return;
         }
 
