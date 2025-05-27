@@ -61,7 +61,7 @@ $active_tools = $tool_manager->get_active_tools();
             printf(
                 /* translators: %s: Author name with link */
                 esc_html__('Author: %s', 'powertools'),
-                '<a target="_blank" href="https://github.com/almazbisenbaev">Almaz Bisenbaev</a>'
+                '<a target="_blank" href="https://almazb.vercel.app">Almaz Bisenbaev</a>'
             );
             ?>
         </p>
