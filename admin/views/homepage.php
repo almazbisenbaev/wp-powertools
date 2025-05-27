@@ -38,7 +38,7 @@ $active_tools = $tool_manager->get_active_tools();
                         <input type="hidden" name="tool_id" value="<?php echo esc_attr($tool_id); ?>">
                         <input type="hidden" name="is_active" value="<?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? '0' : '1'; ?>">
                         <button type="submit" 
-                                class="button toggle-switch <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? 'button-primary' : 'button-secondary'; ?>"
+                                class="ptools-btn ptools-btn-toggle <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? 'ptools-btn--active' : 'ptools-btn--inactive'; ?>"
                                 data-status="<?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? esc_attr__('On', 'powertools') : esc_attr__('Off', 'powertools'); ?>">
                         </button>
                     </form>
@@ -54,7 +54,6 @@ $active_tools = $tool_manager->get_active_tools();
         <?php endforeach; ?>
     </div>
 
-    <hr />
     <div class="powertools-footer">
         <p>
             <?php

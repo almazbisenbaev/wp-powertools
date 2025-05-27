@@ -72,7 +72,7 @@ class Toolbar_Toggler {
                     <input type="submit" 
                            name="save" 
                            value="<?php esc_attr_e('Save Changes', 'powertools'); ?>" 
-                           class="button-primary">
+                           class="ptools-btn ptools-btn--primary">
                 </div>
             </form>
         </div>
