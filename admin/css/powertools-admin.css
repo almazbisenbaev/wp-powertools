@@ -1,182 +1,216 @@
+/* Global Admin Styles */
 .toplevel_page_powertools #wpcontent {
-    padding: 20px;
+    padding: 40px;
+    background: #f5f5f7;
 }
 
+/* Settings Container */
 .ptools-settings {
     max-width: 100%;
     width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0;
 }
 
+/* Settings Title */
 .ptools-settings-title {
-    font-weight: normal;
-    letter-spacing: -0.01em;
-    font-size: 48px;
-    margin-bottom: 40px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-size: 36px;
+    margin-bottom: 24px;
+    color: #1d2327;
 }
 
+.ptools-settings-descr {
+    font-size: 16px;
+    color: #646970;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+/* Metabox Styling */
 .ptools-metabox {
     background: #fff;
-    border: 1px solid rgba(0,10,30,0.05);
-    border-radius: 20px;
-
-    padding: 30px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 24px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .ptools-metabox-footer {
-    border-top: 1px solid rgba(0,10,30,0.1);
-
-    margin-top: 30px;
-    padding-top: 15px;
-}
-
-.powertools-toggler {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.ptools-toggler {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    margin-top: 32px;
+    padding-top: 24px;
     display: flex;
-    gap: 5px;
+    justify-content: flex-end;
 }
 
-.ptools-toggler-content {
-    flex: 1;
-}
-
-.ptools-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.ptools-card {
-    background: #fff;
-    border-radius: 20px;
-    display: block;
-    flex-basis: 300px;
-    padding: 30px;
-}
-
-
-.ptools-intro {
-    background: #fff;
-    border-radius: 20px;
-
-    display: flex;
-    align-items: center;
-}
-
-.ptools-intro-logo {
-    padding: 30px;
-}
-
-.ptools-intro-logo img {
-    display: block;
-    width: 56px;
-    height: auto !important; 
-}
-
-.ptools-intro-content {
-    padding: 30px;
-}
-
-.ptools-intro h1 {
-    letter-spacing: -0.02em;
-    margin-top: 0;
-}
-
-.powertools-homepage {
-    max-width: 1200px;
-    margin: 20px auto;
-}
-
-.ptools-intro {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.ptools-intro-logo {
-    margin-right: 20px;
-}
-
-.ptools-intro-logo img {
-    width: 64px;
-    height: 64px;
-}
-
-.ptools-intro-title {
-    margin: 0 0 10px;
-    font-size: 24px;
-}
-
-.ptools-intro-descr {
-    color: #666;
-}
-
+/* Cards Layout */
 .ptools-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin: 32px 0;
 }
 
 .ptools-card {
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 20px;
-    transition: box-shadow 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.ptools-card:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
+/* Card Header */
 .ptools-card-header {
-    margin-bottom: 15px;
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 }
 
-.ptools-tool-toggle {
-    margin: 0;
-}
-
+/* Card Content */
 .ptools-card-content {
-    color: #333;
+    color: #1d2327;
 }
 
 .ptools-card-content a {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    text-decoration: none;
     color: #2271b1;
+    text-decoration: none;
+    margin-bottom: 12px;
+    display: inline-block;
 }
 
 .ptools-card-content a:hover {
     color: #135e96;
 }
 
-.ptools-footer {
+/* Welcome Section */
+.ptools-intro {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.ptools-intro-logo {
+    padding: 0 24px 0 0;
+}
+
+.ptools-intro-logo img {
+    display: block;
+    width: 64px;
+    height: auto !important;
+}
+
+.ptools-intro-content {
+    flex: 1;
+}
+
+.ptools-intro-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1d2327;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+}
+
+.ptools-intro-descr {
+    font-size: 16px;
+    color: #646970;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Buttons */
+.ptools-tool-toggle .button {
+    padding: 6px 16px;
+    height: auto;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.ptools-tool-toggle .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+}
+
+.ptools-tool-toggle .button-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+}
+
+.ptools-tool-toggle .button-secondary {
+    background: #f0f0f1;
+    border-color: #c3c4c7;
+    color: #1d2327;
+}
+
+.ptools-tool-toggle .button-secondary:hover {
+    background: #e5e5e5;
+    border-color: #999;
+}
+
+/* Footer */
+.powertools-footer {
     text-align: center;
-    color: #666;
-    margin-top: 30px;
+    padding: 32px 0;
+    color: #646970;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    margin-top: 40px;
 }
 
-.ptools-footer p {
-    margin: 5px 0;
+.powertools-footer p {
+    margin: 8px 0;
+    font-size: 14px;
 }
 
-.ptools-footer a {
+.powertools-footer a {
     color: #2271b1;
     text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.ptools-footer a:hover {
+.powertools-footer a:hover {
     color: #135e96;
+}
+
+/* Toggle Switch */
+.ptools-toggler {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    transition: background-color 0.2s ease;
+}
+
+.ptools-toggler:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.ptools-toggler-content {
+    flex: 1;
+}
+
+.ptools-toggler-content div:first-child {
+    font-weight: 500;
+    color: #1d2327;
+    margin-bottom: 4px;
+}
+
+.ptools-toggler-content div:last-child {
+    font-size: 13px;
+    color: #646970;
 }
