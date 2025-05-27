@@ -37,8 +37,9 @@ $active_tools = $tool_manager->get_active_tools();
                         <?php wp_nonce_field('powertools_toggle_tool', 'powertools_toggle_nonce'); ?>
                         <input type="hidden" name="tool_id" value="<?php echo esc_attr($tool_id); ?>">
                         <input type="hidden" name="is_active" value="<?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? '0' : '1'; ?>">
-                        <button type="submit" class="button <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? 'button-primary' : 'button-secondary'; ?>">
-                            <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? esc_html__('Active', 'powertools') : esc_html__('Inactive', 'powertools'); ?>
+                        <button type="submit" 
+                                class="button toggle-switch <?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? 'button-primary' : 'button-secondary'; ?>"
+                                data-status="<?php echo isset($active_tools[$tool_id]) && $active_tools[$tool_id] ? esc_attr__('On', 'powertools') : esc_attr__('Off', 'powertools'); ?>">
                         </button>
                     </form>
                 </div>

@@ -66,13 +66,14 @@
 /* Card Header */
 .ptools-card-header {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
+    justify-content: flex-start;
+    margin-bottom: 16px;
 }
 
 /* Card Content */
 .ptools-card-content {
     color: #1d2327;
+    margin-top: 8px;
 }
 
 .ptools-card-content a {
@@ -185,32 +186,64 @@
 }
 
 /* Toggle Switch */
-.ptools-toggler {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    margin-bottom: 16px;
-    transition: background-color 0.2s ease;
+.ptools-card .button.toggle-switch {
+    position: relative;
+    width: 56px;
+    height: 28px;
+    background: #e5e5e5;
+    border-radius: 14px;
+    padding: 0;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-.ptools-toggler:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+.ptools-card .button.toggle-switch::before {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    left: 0;
+    top: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.ptools-toggler-content {
-    flex: 1;
+.ptools-card .button.toggle-switch.button-primary {
+    background: #2271b1;
+    border-color: transparent;
 }
 
-.ptools-toggler-content div:first-child {
+.ptools-card .button.toggle-switch.button-primary::before {
+    left: 28px;
+}
+
+.ptools-card .button.toggle-switch:hover {
+    border-color: #2271b1;
+}
+
+.ptools-card .button.toggle-switch.button-primary:hover {
+    background: #135e96;
+}
+/* 
+.ptools-card .button.toggle-switch::after {
+    content: attr(data-status);
+    position: absolute;
+    font-size: 11px;
     font-weight: 500;
-    color: #1d2327;
-    margin-bottom: 4px;
-}
-
-.ptools-toggler-content div:last-child {
-    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 100%;
+    text-align: center;
     color: #646970;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+} */
+
+.ptools-card .button.toggle-switch.button-primary::after {
+    color: white;
 }
