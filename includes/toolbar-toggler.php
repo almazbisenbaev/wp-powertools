@@ -152,6 +152,3 @@ class Toolbar_Toggler {
     }
 }
 
-// Initialize the class
-$toolbar_toggler = new Toolbar_Toggler();
-
