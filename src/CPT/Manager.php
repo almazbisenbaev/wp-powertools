@@ -332,5 +332,4 @@ class Manager {
     }
 }
 
-// Initialize the class
-$cpt_manager = new Manager();
+

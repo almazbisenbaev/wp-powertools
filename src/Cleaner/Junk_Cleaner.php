@@ -89,5 +89,5 @@ class Junk_Cleaner {
 }
 
 // Initialize the class
-$junk_cleaner = new Junk_Cleaner();
+
 

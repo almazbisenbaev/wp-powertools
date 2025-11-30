@@ -139,4 +139,4 @@ class Junk_Remover {
 }
 
 // Initialize the class
-$html_junk_remover = new Junk_Remover();
+

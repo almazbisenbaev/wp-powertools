@@ -131,4 +131,4 @@ class Gutenberg_Disabler {
 }
 
 // Initialize the class
-$gutenberg_disabler = new Gutenberg_Disabler();
+

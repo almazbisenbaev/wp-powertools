@@ -33,7 +33,7 @@ class Plugin {
         add_action('plugins_loaded', array($this, 'init_admin_menu'));
 
         // Initialize tools
-        add_action('init', array($this, 'init_tools'));
+        add_action('plugins_loaded', array($this, 'init_tools'));
 
         // Enqueue admin styles
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));

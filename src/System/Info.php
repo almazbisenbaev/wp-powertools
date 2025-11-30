@@ -155,7 +155,7 @@ class Info {
 }
 
 // Initialize the class
-$system_info = new Info();
+
 
 
 

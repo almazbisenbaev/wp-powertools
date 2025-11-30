@@ -194,4 +194,4 @@ class Comments_Disabler {
 }
 
 // Initialize the class
-$comments_disabler = new Comments_Disabler(); 
+ 
