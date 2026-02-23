@@ -43,112 +43,231 @@ class Manager {
         if (!is_array($custom_post_types)) {
             $custom_post_types = [];
         }
+
+        $supports         = $edit_mode && isset($custom_post_types[$edit_mode]['supports']) ? $custom_post_types[$edit_mode]['supports'] : ['title', 'editor', 'thumbnail'];
+        $support_options  = ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'];
         ?>
 
-        <div class="wrap">
-            <h1><?php esc_html_e('Custom Post Type Manager', 'powertools'); ?></h1>
+        <div class="ptools-settings">
+            <div class="ptools-settings-header">
+                <h2 class="ptools-settings-title"><?php esc_html_e('CPT Manager', 'powertools'); ?></h2>
+                <div class="ptools-settings-descr">
+                    <?php esc_html_e('Create and manage custom post types for your WordPress site.', 'powertools'); ?>
+                </div>
+            </div>
 
             <?php if (isset($_GET['error_message'])): ?>
-                <div class="notice notice-error is-dismissible">
-                    <p><?php echo esc_html($_GET['error_message']); ?></p>
+                <div class="ptools-notice ptools-notice--error">
+                    <span class="dashicons dashicons-dismiss"></span>
+                    <?php echo esc_html(urldecode($_GET['error_message'])); ?>
                 </div>
             <?php endif; ?>
 
             <?php if (isset($_GET['success_message'])): ?>
-                <div class="notice notice-success is-dismissible">
-                    <p><?php echo esc_html($_GET['success_message']); ?></p>
+                <div class="ptools-notice ptools-notice--success">
+                    <span class="dashicons dashicons-yes-alt"></span>
+                    <?php echo esc_html(urldecode($_GET['success_message'])); ?>
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="<?php echo $edit_mode ? 'powertools_cptm_edit' : 'powertools_cptm_add'; ?>">
-                <?php wp_nonce_field($edit_mode ? 'powertools_cptm_edit_nonce_action' : 'powertools_cptm_add_nonce_action', $edit_mode ? 'powertools_cptm_edit_nonce' : 'powertools_cptm_add_nonce'); ?>
-                <table class="form-table">
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Post Type Name', 'powertools'); ?></th>
-                        <td><input type="text" name="powertools_cptm_post_type_name" value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['name']) : ''; ?>" <?php echo $edit_mode ? 'readonly' : 'required'; ?> /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Singular Label', 'powertools'); ?></th>
-                        <td><input type="text" name="powertools_cptm_singular_label" value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['singular_label']) : ''; ?>" required /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Plural Label', 'powertools'); ?></th>
-                        <td><input type="text" name="powertools_cptm_plural_label" value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['plural_label']) : ''; ?>" required /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Public', 'powertools'); ?></th>
-                        <td><input type="checkbox" name="powertools_cptm_public" value="1" <?php checked($edit_mode ? $custom_post_types[$edit_mode]['public'] : true); ?> /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Has Archive', 'powertools'); ?></th>
-                        <td><input type="checkbox" name="powertools_cptm_has_archive" value="1" <?php checked($edit_mode ? $custom_post_types[$edit_mode]['has_archive'] : true); ?> /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Hierarchical', 'powertools'); ?></th>
-                        <td><input type="checkbox" name="powertools_cptm_hierarchical" value="1" <?php checked($edit_mode && isset($custom_post_types[$edit_mode]['hierarchical']) ? $custom_post_types[$edit_mode]['hierarchical'] : false); ?> /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Menu Position', 'powertools'); ?></th>
-                        <td><input type="number" name="powertools_cptm_menu_position" value="<?php echo $edit_mode && isset($custom_post_types[$edit_mode]['menu_position']) ? esc_attr($custom_post_types[$edit_mode]['menu_position']) : ''; ?>" /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Menu Icon', 'powertools'); ?></th>
-                        <td><input type="text" name="powertools_cptm_menu_icon" value="<?php echo $edit_mode && isset($custom_post_types[$edit_mode]['menu_icon']) ? esc_attr($custom_post_types[$edit_mode]['menu_icon']) : ''; ?>" placeholder="dashicons-admin-post" /></td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php esc_html_e('Supports', 'powertools'); ?></th>
-                        <td>
-                            <?php
-                            $supports = $edit_mode && isset($custom_post_types[$edit_mode]['supports']) ? $custom_post_types[$edit_mode]['supports'] : ['title', 'editor', 'thumbnail'];
-                            $support_options = ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'];
-                            foreach ($support_options as $option) {
-                                echo '<label><input type="checkbox" name="powertools_cptm_supports[]" value="' . esc_attr($option) . '" ' . (in_array($option, $supports) ? 'checked' : '') . ' /> ' . esc_html(ucfirst($option)) . '</label><br>';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                </table>
-                <p class="submit">
-                    <input type="submit" class="button-primary" value="<?php echo $edit_mode ? esc_attr__('Update Post Type', 'powertools') : esc_attr__('Add Post Type', 'powertools'); ?>" />
-                </p>
-            </form>
+            <!-- Form -->
+            <div class="ptools-metabox">
+                <h3 class="ptools-metabox-title">
+                    <?php echo $edit_mode ? esc_html__('Edit Post Type', 'powertools') : esc_html__('Add New Post Type', 'powertools'); ?>
+                </h3>
 
-            <h2><?php esc_html_e('Existing Custom Post Types', 'powertools'); ?></h2>
-            <table class="wp-list-table widefat fixed striped">
-                <thead>
-                    <tr>
-                        <th><?php esc_html_e('Name', 'powertools'); ?></th>
-                        <th><?php esc_html_e('Singular Label', 'powertools'); ?></th>
-                        <th><?php esc_html_e('Plural Label', 'powertools'); ?></th>
-                        <th><?php esc_html_e('Actions', 'powertools'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($custom_post_types)): ?>
-                        <tr>
-                            <td colspan="4"><?php esc_html_e('No custom post types found.', 'powertools'); ?></td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($custom_post_types as $post_type => $data): ?>
-                            <tr>
-                                <td><?php echo esc_html($post_type); ?></td>
-                                <td><?php echo esc_html($data['singular_label']); ?></td>
-                                <td><?php echo esc_html($data['plural_label']); ?></td>
-                                <td>
-                                    <a href="<?php echo esc_url(add_query_arg('edit', $post_type)); ?>" class="button"><?php esc_html_e('Edit', 'powertools'); ?></a>
-                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline;">
-                                        <input type="hidden" name="action" value="powertools_cptm_delete">
-                                        <input type="hidden" name="powertools_cptm_post_type" value="<?php echo esc_attr($post_type); ?>">
-                                        <?php wp_nonce_field('powertools_cptm_delete_nonce_action', 'powertools_cptm_delete_nonce'); ?>
-                                        <button type="submit" class="button" onclick="return confirm('<?php esc_attr_e('Are you sure you want to delete this post type?', 'powertools'); ?>');"><?php esc_html_e('Delete', 'powertools'); ?></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <input type="hidden" name="action" value="<?php echo $edit_mode ? 'powertools_cptm_edit' : 'powertools_cptm_add'; ?>">
+                    <?php wp_nonce_field($edit_mode ? 'powertools_cptm_edit_nonce_action' : 'powertools_cptm_add_nonce_action', $edit_mode ? 'powertools_cptm_edit_nonce' : 'powertools_cptm_add_nonce'); ?>
+
+                    <div class="ptools-form-grid">
+                        <div class="ptools-form-group">
+                            <label class="ptools-form-label" for="cptm_post_type_name">
+                                <?php esc_html_e('Post Type Name', 'powertools'); ?>
+                                <span class="ptools-form-required">*</span>
+                            </label>
+                            <div class="ptools-form-input-wrap">
+                                <span class="dashicons dashicons-tag"></span>
+                                <input class="ptools-form-input ptools-form-input--mono" id="cptm_post_type_name" type="text"
+                                       name="powertools_cptm_post_type_name"
+                                       value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['name']) : ''; ?>"
+                                       placeholder="e.g. my_portfolio"
+                                       <?php echo $edit_mode ? 'readonly' : 'required'; ?> />
+                            </div>
+                            <span class="ptools-form-hint"><?php esc_html_e('Lowercase, underscores only. Max 20 chars.', 'powertools'); ?></span>
+                        </div>
+
+                        <div class="ptools-form-group">
+                            <label class="ptools-form-label" for="cptm_singular_label">
+                                <?php esc_html_e('Singular Label', 'powertools'); ?>
+                                <span class="ptools-form-required">*</span>
+                            </label>
+                            <div class="ptools-form-input-wrap">
+                                <span class="dashicons dashicons-admin-users"></span>
+                                <input class="ptools-form-input" id="cptm_singular_label" type="text"
+                                       name="powertools_cptm_singular_label"
+                                       value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['singular_label']) : ''; ?>"
+                                       placeholder="<?php esc_attr_e('e.g. Project', 'powertools'); ?>"
+                                       required />
+                            </div>
+                        </div>
+
+                        <div class="ptools-form-group">
+                            <label class="ptools-form-label" for="cptm_plural_label">
+                                <?php esc_html_e('Plural Label', 'powertools'); ?>
+                                <span class="ptools-form-required">*</span>
+                            </label>
+                            <div class="ptools-form-input-wrap">
+                                <span class="dashicons dashicons-admin-users"></span>
+                                <input class="ptools-form-input" id="cptm_plural_label" type="text"
+                                       name="powertools_cptm_plural_label"
+                                       value="<?php echo $edit_mode ? esc_attr($custom_post_types[$edit_mode]['plural_label']) : ''; ?>"
+                                       placeholder="<?php esc_attr_e('e.g. Projects', 'powertools'); ?>"
+                                       required />
+                            </div>
+                        </div>
+
+                        <div class="ptools-form-group">
+                            <label class="ptools-form-label" for="cptm_menu_icon">
+                                <?php esc_html_e('Menu Icon', 'powertools'); ?>
+                            </label>
+                            <div class="ptools-form-input-wrap">
+                                <span class="dashicons dashicons-admin-appearance"></span>
+                                <input class="ptools-form-input ptools-form-input--mono" id="cptm_menu_icon" type="text"
+                                       name="powertools_cptm_menu_icon"
+                                       value="<?php echo $edit_mode && isset($custom_post_types[$edit_mode]['menu_icon']) ? esc_attr($custom_post_types[$edit_mode]['menu_icon']) : ''; ?>"
+                                       placeholder="dashicons-admin-post" />
+                            </div>
+                            <span class="ptools-form-hint">
+                                <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank"><?php esc_html_e('Browse Dashicons →', 'powertools'); ?></a>
+                            </span>
+                        </div>
+
+                        <div class="ptools-form-group">
+                            <label class="ptools-form-label" for="cptm_menu_position">
+                                <?php esc_html_e('Menu Position', 'powertools'); ?>
+                            </label>
+                            <div class="ptools-form-input-wrap">
+                                <span class="dashicons dashicons-menu"></span>
+                                <input class="ptools-form-input ptools-form-input--short" id="cptm_menu_position" type="number"
+                                       name="powertools_cptm_menu_position"
+                                       value="<?php echo $edit_mode && isset($custom_post_types[$edit_mode]['menu_position']) ? esc_attr($custom_post_types[$edit_mode]['menu_position']) : ''; ?>"
+                                       min="1" placeholder="25" />
+                            </div>
+                            <span class="ptools-form-hint"><?php esc_html_e('WordPress default is 25 (below Comments).', 'powertools'); ?></span>
+                        </div>
+                    </div>
+
+                    <div class="ptools-form-toggles">
+                        <label class="ptools-toggle-label">
+                            <input type="checkbox" name="powertools_cptm_public" value="1"
+                                   <?php checked($edit_mode ? $custom_post_types[$edit_mode]['public'] : true); ?> />
+                            <span class="ptools-toggle-text"><?php esc_html_e('Public', 'powertools'); ?></span>
+                        </label>
+                        <label class="ptools-toggle-label">
+                            <input type="checkbox" name="powertools_cptm_has_archive" value="1"
+                                   <?php checked($edit_mode ? $custom_post_types[$edit_mode]['has_archive'] : true); ?> />
+                            <span class="ptools-toggle-text"><?php esc_html_e('Has Archive', 'powertools'); ?></span>
+                        </label>
+                        <label class="ptools-toggle-label">
+                            <input type="checkbox" name="powertools_cptm_hierarchical" value="1"
+                                   <?php checked($edit_mode && isset($custom_post_types[$edit_mode]['hierarchical']) ? $custom_post_types[$edit_mode]['hierarchical'] : false); ?> />
+                            <span class="ptools-toggle-text"><?php esc_html_e('Hierarchical', 'powertools'); ?></span>
+                        </label>
+                    </div>
+
+                    <div class="ptools-form-group">
+                        <span class="ptools-form-label"><?php esc_html_e('Supports', 'powertools'); ?></span>
+                        <div class="ptools-form-supports">
+                            <?php foreach ($support_options as $option): ?>
+                                <label class="ptools-toggle-label">
+                                    <input type="checkbox" name="powertools_cptm_supports[]"
+                                           value="<?php echo esc_attr($option); ?>"
+                                           <?php checked(in_array($option, $supports)); ?> />
+                                    <span class="ptools-toggle-text"><?php echo esc_html(ucfirst(str_replace('-', ' ', $option))); ?></span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <div class="ptools-metabox-footer">
+                        <?php if ($edit_mode): ?>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-cpt-manager')); ?>" class="button ptools-btn ptools-btn--secondary">
+                                <?php esc_html_e('Cancel', 'powertools'); ?>
+                            </a>
+                        <?php endif; ?>
+                        <input type="submit" class="button button-primary"
+                               value="<?php echo $edit_mode ? esc_attr__('Update Post Type', 'powertools') : esc_attr__('Add Post Type', 'powertools'); ?>" />
+                    </div>
+                </form>
+            </div>
+
+            <!-- List -->
+            <div class="ptools-metabox">
+                <h3 class="ptools-metabox-title">
+                    <?php esc_html_e('Registered Post Types', 'powertools'); ?>
+                    <span class="ptools-cpt-count"><?php echo count($custom_post_types); ?></span>
+                </h3>
+
+                <?php if (empty($custom_post_types)): ?>
+                    <div class="ptools-cpt-empty">
+                        <span class="dashicons dashicons-category"></span>
+                        <p><?php esc_html_e('No custom post types registered yet. Use the form above to create your first one.', 'powertools'); ?></p>
+                    </div>
+                <?php else: ?>
+                    <div class="ptools-cpt-table-wrap">
+                        <table class="ptools-cpt-table">
+                            <thead>
+                                <tr>
+                                    <th><?php esc_html_e('Name', 'powertools'); ?></th>
+                                    <th><?php esc_html_e('Singular', 'powertools'); ?></th>
+                                    <th><?php esc_html_e('Plural', 'powertools'); ?></th>
+                                    <th><?php esc_html_e('Flags', 'powertools'); ?></th>
+                                    <th><?php esc_html_e('Actions', 'powertools'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($custom_post_types as $post_type => $data): ?>
+                                    <tr class="<?php echo ($edit_mode === $post_type) ? 'ptools-row--editing' : ''; ?>">
+                                        <td>
+                                            <code class="ptools-cpt-slug"><?php echo esc_html($post_type); ?></code>
+                                        </td>
+                                        <td><?php echo esc_html($data['singular_label']); ?></td>
+                                        <td><?php echo esc_html($data['plural_label']); ?></td>
+                                        <td class="ptools-cpt-flags">
+                                            <?php if (!empty($data['public'])): ?>
+                                                <span class="ptools-flag ptools-flag--on" title="<?php esc_attr_e('Public', 'powertools'); ?>">Public</span>
+                                            <?php endif; ?>
+                                            <?php if (!empty($data['has_archive'])): ?>
+                                                <span class="ptools-flag ptools-flag--on" title="<?php esc_attr_e('Has Archive', 'powertools'); ?>">Archive</span>
+                                            <?php endif; ?>
+                                            <?php if (!empty($data['hierarchical'])): ?>
+                                                <span class="ptools-flag ptools-flag--on" title="<?php esc_attr_e('Hierarchical', 'powertools'); ?>">Hierarchical</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="ptools-cpt-actions">
+                                            <a href="<?php echo esc_url(add_query_arg('edit', $post_type)); ?>" class="ptools-action-btn ptools-action-btn--edit">
+                                                <span class="dashicons dashicons-edit"></span>
+                                                <?php esc_html_e('Edit', 'powertools'); ?>
+                                            </a>
+                                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline;">
+                                                <input type="hidden" name="action" value="powertools_cptm_delete">
+                                                <input type="hidden" name="powertools_cptm_post_type" value="<?php echo esc_attr($post_type); ?>">
+                                                <?php wp_nonce_field('powertools_cptm_delete_nonce_action', 'powertools_cptm_delete_nonce'); ?>
+                                                <button type="submit" class="ptools-action-btn ptools-action-btn--delete"
+                                                        onclick="return confirm('<?php esc_attr_e('Are you sure you want to delete this post type?', 'powertools'); ?>');">
+                                                    <span class="dashicons dashicons-trash"></span>
+                                                    <?php esc_html_e('Delete', 'powertools'); ?>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
         <?php
     }
