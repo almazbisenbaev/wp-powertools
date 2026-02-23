@@ -449,6 +449,111 @@
     background: rgba(34, 113, 177, 0.05);
 }
 
+/* Metabox Title */
+.ptools-metabox-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+    margin: 0 0 24px 0;
+    letter-spacing: -0.01em;
+}
+
+/* Stat Cards */
+.ptools-stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.ptools-stat-card {
+    background: #f8f7ff;
+    border: 1px solid #e9e4f9;
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: box-shadow 0.2s ease;
+}
+
+.ptools-stat-card:hover {
+    box-shadow: 0 4px 12px rgba(107, 70, 193, 0.1);
+}
+
+.ptools-stat-icon {
+    display: block;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    margin: 0 auto 12px;
+    color: #6b46c1;
+}
+
+.ptools-stat-value {
+    font-size: 40px;
+    font-weight: 700;
+    color: #1d2327;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.03em;
+}
+
+.ptools-stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #646970;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Inline notices */
+.ptools-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.ptools-notice .dashicons {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.ptools-notice--warning {
+    background: #fff8e6;
+    border: 1px solid #f0c040;
+    color: #8a6400;
+}
+
+.ptools-notice--warning .dashicons {
+    color: #d4a017;
+}
+
+.ptools-notice--success {
+    background: #edfaed;
+    border: 1px solid #68de7c;
+    color: #1a6b2a;
+}
+
+.ptools-notice--success .dashicons {
+    color: #2ecc50;
+}
+
+/* Disabled button state */
+.ptools-settings .button-primary:disabled,
+.ptools-metabox .button-primary:disabled {
+    background: #c3b8e0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
 /* Help text and descriptions */
 .ptools-settings .description {
     color: #646970;
