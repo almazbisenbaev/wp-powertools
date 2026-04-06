@@ -59,6 +59,11 @@ class Tool_Manager {
             'description' => 'This tool lets you delete the drafts and revisions that are taking up your disc space',
             'class' => 'PowerTools\\Cleaner\\Junk_Cleaner'
         ],
+        'insert_code' => [
+            'name' => 'Insert Code',
+            'description' => 'Add custom HTML, CSS, JS or PHP code snippets to your site with flexible rules',
+            'class' => 'PowerTools\\Code\\Insert_Code'
+        ],
         'system_info' => [
             'name' => 'System Info',
             'description' => 'View and export system info that can be useful for your IT guy or a tech support agent',

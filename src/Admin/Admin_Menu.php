@@ -128,6 +128,14 @@ class Admin_Menu {
     }
 
     /**
+     * Render the insert code page
+     */
+    public function render_insert_code() {
+        $insert_code = new \PowerTools\Code\Insert_Code();
+        $insert_code->render_settings_page();
+    }
+
+    /**
      * Render the system info page
      */
     public function render_system_info() {

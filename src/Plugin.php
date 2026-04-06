@@ -16,6 +16,7 @@ use PowerTools\Toolbar\Toolbar_Toggler;
 use PowerTools\HTML\Junk_Remover;
 use PowerTools\Cleaner\Junk_Cleaner;
 use PowerTools\Gutenberg\Gutenberg_Disabler;
+use PowerTools\Code\Insert_Code;
 
 /**
  * Class Plugin
@@ -94,17 +95,30 @@ class Plugin {
         if (isset($active_tools['gutenberg_disabler']) && $active_tools['gutenberg_disabler']) {
             new Gutenberg_Disabler();
         }
+
+        // Initialize insert code if active
+        if (isset($active_tools['insert_code']) && $active_tools['insert_code']) {
+            new Insert_Code();
+        }
     }
 
     /**
      * Enqueue admin styles
      */
-    public function enqueue_admin_styles() {
+    public function enqueue_admin_styles($hook) {
         wp_enqueue_style(
             'powertools-admin-styles',
             POWERTOOLS_PLUGIN_URL . 'admin/css/powertools-admin.css',
             array(),
             POWERTOOLS_VERSION
         );
+
+        // Enqueue CodeMirror for the Insert Code tool
+        if (strpos($hook, 'powertools-insert-code') !== false) {
+            $settings = wp_enqueue_code_editor(array('type' => 'text/html'));
+            if (false !== $settings) {
+                wp_add_inline_script('code-editor', sprintf('var ptoolsCodeEditorSettings = %s;', wp_json_encode($settings)));
+            }
+        }
     }
 }
