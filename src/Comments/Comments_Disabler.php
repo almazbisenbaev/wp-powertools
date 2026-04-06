@@ -45,34 +45,45 @@ class Comments_Disabler {
 
         $is_comments_disabled = get_option(self::OPTION_NAME);
         ?>
-        <div class="ptools-settings">
-            <div class="ptools-settings-header">
-                <h2 class="ptools-settings-title"><?php esc_html_e('Disable Comments', 'powertools'); ?></h2>
-                <div class="ptools-settings-descr">
-                    <?php esc_html_e('This setting completely disables the WordPress comments feature', 'powertools'); ?>
+        <div class="powertools-wrap pt-fade-in">
+            <header class="pt-intro">
+                <div class="pt-intro-logo">
+                    <span class="dashicons dashicons-admin-comments" style="font-size: 48px; width: 48px; height: 48px; color: var(--pt-primary);"></span>
                 </div>
-            </div>
+                <div class="pt-intro-content">
+                    <h1 class="pt-h1"><?php esc_html_e('Disable Comments', 'powertools'); ?></h1>
+                    <p class="pt-p">
+                        <?php esc_html_e('Completely disable the WordPress comments feature and clean up your admin.', 'powertools'); ?>
+                    </p>
+                </div>
+            </header>
 
-            <form class="ptools-metabox" method="post">
+            <form class="pt-settings-container" method="post">
                 <?php wp_nonce_field('powertools_comments_disabler'); ?>
+                
+                <div class="pt-settings-header">
+                    <h2 class="pt-h2"><?php esc_html_e('Settings', 'powertools'); ?></h2>
+                </div>
 
-                <label class="ptools-toggler" for="disable_comments">
-                    <div class="ptools-toggler-input">
-                        <input type="checkbox" 
-                               id="disable_comments" 
-                               name="disable_comments" 
-                               <?php checked(1, $is_comments_disabled); ?> />
+                <div class="pt-settings-body">
+                    <div class="pt-form-group">
+                        <label class="pt-checkbox-label">
+                            <input type="checkbox" 
+                                   name="disable_comments" 
+                                   <?php checked(1, $is_comments_disabled); ?> />
+                            <div>
+                                <div style="font-weight: 600;"><?php esc_html_e('Disable Comments Globally', 'powertools'); ?></div>
+                                <div class="pt-text-muted" style="font-size: 14px;"><?php esc_html_e('This will disable comments on all post types, remove comment links from the admin bar, and hide the comments menu.', 'powertools'); ?></div>
+                            </div>
+                        </label>
                     </div>
-                    <div class="ptools-toggler-content">
-                        <div><?php esc_html_e('Disable Comments', 'powertools'); ?></div>
-                    </div>
-                </label>
+                </div>
 
-                <div class="ptools-metabox-footer">
+                <div class="pt-settings-footer">
                     <input type="submit" 
                            name="save" 
-                           value="<?php esc_attr_e('Save Changes', 'powertools'); ?>" 
-                           class="button-primary">
+                           value="<?php esc_attr_e('Save Settings', 'powertools'); ?>" 
+                           class="pt-btn pt-btn-primary">
                 </div>
             </form>
         </div>

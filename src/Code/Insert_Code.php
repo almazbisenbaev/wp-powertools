@@ -264,40 +264,52 @@ class Insert_Code {
         $post_types = get_post_types(array('public' => true), 'objects');
 
         ?>
-        <div class="ptools-settings">
-            <div class="ptools-settings-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h2 class="ptools-settings-title"><?php esc_html_e('Insert Code', 'powertools'); ?></h2>
-                    <div class="ptools-settings-descr">
-                        <?php esc_html_e('Add custom HTML, CSS, JS or PHP code snippets to your site.', 'powertools'); ?>
+        <div class="powertools-wrap pt-fade-in">
+            <header class="pt-intro">
+                <div class="pt-intro-logo">
+                    <span class="dashicons dashicons-code-standards" style="font-size: 48px; width: 48px; height: 48px; color: var(--pt-primary);"></span>
+                </div>
+                <div class="pt-intro-content">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h1 class="pt-h1"><?php esc_html_e('Insert Code', 'powertools'); ?></h1>
+                            <p class="pt-p">
+                                <?php esc_html_e('Add custom HTML, CSS, JS or PHP code snippets to your site without editing theme files.', 'powertools'); ?>
+                            </p>
+                        </div>
+                        <?php if (!$edit_id): ?>
+                            <button type="button" id="ptools-open-new-snippet-modal" class="pt-btn pt-btn-primary">
+                                <span class="dashicons dashicons-plus"></span>
+                                <?php esc_html_e('Add New Snippet', 'powertools'); ?>
+                            </button>
+                        <?php else: ?>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-insert-code')); ?>" class="pt-btn pt-btn-secondary">
+                                <span class="dashicons dashicons-arrow-left-alt"></span>
+                                <?php esc_html_e('Back to List', 'powertools'); ?>
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
-                <?php if (!$edit_id): ?>
-                    <button type="button" id="ptools-open-new-snippet-modal" class="button button-primary" style="height: 40px; padding: 0 24px; border-radius: 12px;">
-                        <span class="dashicons dashicons-plus" style="margin-top: 8px; margin-right: 4px;"></span>
-                        <?php esc_html_e('Add New Snippet', 'powertools'); ?>
-                    </button>
-                <?php else: ?>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-insert-code')); ?>" class="button" style="height: 40px; line-height: 38px; padding: 0 24px; border-radius: 12px;">
-                        <span class="dashicons dashicons-arrow-left-alt" style="margin-top: 8px; margin-right: 4px;"></span>
-                        <?php esc_html_e('Back to List', 'powertools'); ?>
-                    </a>
-                <?php endif; ?>
-            </div>
+            </header>
 
             <?php if (isset($_GET['success'])): ?>
-                <div class="ptools-notice ptools-notice--success">
+                <div class="pt-badge pt-badge-success" style="margin-bottom: 24px; width: 100%; box-sizing: border-box;">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Settings saved successfully.', 'powertools'); ?>
+                    <?php esc_html_e('Snippet saved successfully.', 'powertools'); ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($edit_id && $snippet_to_edit): ?>
                 <!-- Edit View -->
-                <div class="ptools-metabox" style="margin-top: 0;">
-                    <h3 class="ptools-metabox-title">
-                        <?php esc_html_e('Edit Snippet', 'powertools'); ?> (<?php echo esc_html(strtoupper($snippet_to_edit['type'])); ?>)
-                    </h3>
+                <div class="pt-settings-container">
+                    <div class="pt-settings-header">
+                        <h2 class="pt-h2">
+                            <?php esc_html_e('Edit Snippet', 'powertools'); ?> 
+                            <span style="font-size: 14px; background: var(--pt-primary-soft); color: var(--pt-primary); padding: 4px 12px; border-radius: 20px; vertical-align: middle; margin-left: 8px;">
+                                <?php echo esc_html(strtoupper($snippet_to_edit['type'])); ?>
+                            </span>
+                        </h2>
+                    </div>
                     
                     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                         <input type="hidden" name="action" value="powertools_save_snippet">
@@ -305,204 +317,223 @@ class Insert_Code {
                         <input type="hidden" name="type" value="<?php echo esc_attr($snippet_to_edit['type']); ?>">
                         <?php wp_nonce_field('powertools_save_snippet_nonce'); ?>
 
-                        <div class="ptools-form-grid" style="grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
-                            <div class="ptools-form-group">
-                                <label class="ptools-form-label"><?php esc_html_e('Snippet Title', 'powertools'); ?></label>
-                                <input type="text" name="title" class="ptools-form-input" value="<?php echo esc_attr($snippet_to_edit['title']); ?>" required placeholder="e.g. Google Analytics">
+                        <div class="pt-settings-body">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; margin-bottom: 32px;">
+                                <div class="pt-form-group">
+                                    <label class="pt-form-label"><?php esc_html_e('Snippet Title', 'powertools'); ?></label>
+                                    <input type="text" name="title" class="pt-form-control" value="<?php echo esc_attr($snippet_to_edit['title']); ?>" required placeholder="e.g. Google Analytics">
+                                </div>
+                                <div class="pt-form-group">
+                                    <label class="pt-form-label"><?php esc_html_e('Location', 'powertools'); ?></label>
+                                    <select name="location" class="pt-form-control">
+                                        <option value="wp_head" <?php selected($snippet_to_edit['location'], 'wp_head'); ?>>Site Header (wp_head)</option>
+                                        <option value="wp_body_open" <?php selected($snippet_to_edit['location'], 'wp_body_open'); ?>>After Body Tag (wp_body_open)</option>
+                                        <option value="wp_footer" <?php selected($snippet_to_edit['location'], 'wp_footer'); ?>>Site Footer (wp_footer)</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="ptools-form-group">
-                                <label class="ptools-form-label"><?php esc_html_e('Location', 'powertools'); ?></label>
-                                <select name="location" class="ptools-form-input">
-                                    <option value="wp_head" <?php selected($snippet_to_edit['location'], 'wp_head'); ?>>Site Header (wp_head)</option>
-                                    <option value="wp_body_open" <?php selected($snippet_to_edit['location'], 'wp_body_open'); ?>>After Body Tag (wp_body_open)</option>
-                                    <option value="wp_footer" <?php selected($snippet_to_edit['location'], 'wp_footer'); ?>>Site Footer (wp_footer)</option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="ptools-form-group" style="margin-bottom: 24px;">
-                            <label class="ptools-form-label"><?php esc_html_e('Conditional Logic (Optional)', 'powertools'); ?></label>
-                            <div id="ptools-rules-container">
-                                <?php 
-                                $rules = !empty($snippet_to_edit['rules']) ? $snippet_to_edit['rules'] : array();
-                                if (empty($rules)) {
-                                    $rules = array(array('type' => '', 'value' => ''));
-                                }
-                                foreach ($rules as $index => $rule): 
-                                ?>
-                                    <div class="ptools-rule-row" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                                        <select name="rules[<?php echo $index; ?>][type]" class="ptools-form-input ptools-rule-type" style="flex: 1;">
-                                            <option value=""><?php esc_html_e('No Rule', 'powertools'); ?></option>
-                                            <option value="user_role" <?php selected($rule['type'], 'user_role'); ?>><?php esc_html_e('User Role', 'powertools'); ?></option>
-                                            <option value="page_id" <?php selected($rule['type'], 'page_id'); ?>><?php esc_html_e('Page/Post ID', 'powertools'); ?></option>
-                                            <option value="post_type" <?php selected($rule['type'], 'post_type'); ?>><?php esc_html_e('Post Type', 'powertools'); ?></option>
-                                        </select>
-                                        
-                                        <div class="ptools-rule-value-container" style="flex: 2;">
-                                            <!-- Default Input (Hidden by JS if needed) -->
-                                            <input type="text" 
-                                                   name="rules[<?php echo $index; ?>][value]" 
-                                                   class="ptools-form-input ptools-rule-value ptools-rule-value-text" 
-                                                   value="<?php echo esc_attr($rule['value']); ?>" 
-                                                   placeholder="Value (e.g. 12, 45)"
-                                                   style="<?php echo in_array($rule['type'], array('user_role', 'post_type')) ? 'display:none;' : ''; ?>">
-
-                                            <!-- User Role Select -->
-                                            <select name="rules[<?php echo $index; ?>][value_role]" 
-                                                    class="ptools-form-input ptools-rule-value ptools-rule-value-role" 
-                                                    style="<?php echo $rule['type'] !== 'user_role' ? 'display:none;' : ''; ?>"
-                                                    <?php echo $rule['type'] !== 'user_role' ? 'disabled' : ''; ?>>
-                                                <option value="guest" <?php selected($rule['value'], 'guest'); ?>><?php esc_html_e('Guest (Logged out)', 'powertools'); ?></option>
-                                                <?php foreach ($roles as $role_key => $role_name): ?>
-                                                    <option value="<?php echo esc_attr($role_key); ?>" <?php selected($rule['value'], $role_key); ?>><?php echo esc_html($role_name); ?></option>
-                                                <?php endforeach; ?>
+                            <div class="pt-form-group" style="margin-bottom: 32px;">
+                                <label class="pt-form-label"><?php esc_html_e('Conditional Logic (Optional)', 'powertools'); ?></label>
+                                <div id="ptools-rules-container">
+                                    <?php 
+                                    $rules = !empty($snippet_to_edit['rules']) ? $snippet_to_edit['rules'] : array();
+                                    if (empty($rules)) {
+                                        $rules = array(array('type' => '', 'value' => ''));
+                                    }
+                                    foreach ($rules as $index => $rule): 
+                                    ?>
+                                        <div class="ptools-rule-row" style="display: flex; gap: 16px; margin-bottom: 16px; align-items: center; background: var(--pt-bg-page); padding: 20px; border-radius: var(--pt-radius-sm); border: 1px solid var(--pt-border-soft);">
+                                            <select name="rules[<?php echo $index; ?>][type]" class="pt-form-control ptools-rule-type" style="flex: 1;">
+                                                <option value=""><?php esc_html_e('No Rule', 'powertools'); ?></option>
+                                                <option value="user_role" <?php selected($rule['type'], 'user_role'); ?>><?php esc_html_e('User Role', 'powertools'); ?></option>
+                                                <option value="page_id" <?php selected($rule['type'], 'page_id'); ?>><?php esc_html_e('Page/Post ID', 'powertools'); ?></option>
+                                                <option value="post_type" <?php selected($rule['type'], 'post_type'); ?>><?php esc_html_e('Post Type', 'powertools'); ?></option>
                                             </select>
+                                            
+                                            <div class="ptools-rule-value-container" style="flex: 2;">
+                                                <input type="text" 
+                                                       name="rules[<?php echo $index; ?>][value]" 
+                                                       class="pt-form-control ptools-rule-value ptools-rule-value-text" 
+                                                       value="<?php echo esc_attr($rule['value']); ?>" 
+                                                       placeholder="Value (e.g. 12, 45)"
+                                                       style="<?php echo in_array($rule['type'], array('user_role', 'post_type')) ? 'display:none;' : ''; ?>">
 
-                                            <!-- Post Type Select -->
-                                            <select name="rules[<?php echo $index; ?>][value_post_type]" 
-                                                    class="ptools-form-input ptools-rule-value ptools-rule-value-post-type" 
-                                                    style="<?php echo $rule['type'] !== 'post_type' ? 'display:none;' : ''; ?>"
-                                                    <?php echo $rule['type'] !== 'post_type' ? 'disabled' : ''; ?>>
-                                                <?php foreach ($post_types as $pt): ?>
-                                                    <option value="<?php echo esc_attr($pt->name); ?>" <?php selected($rule['value'], $pt->name); ?>><?php echo esc_html($pt->label); ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                                <select name="rules[<?php echo $index; ?>][value_role]" 
+                                                        class="pt-form-control ptools-rule-value ptools-rule-value-role" 
+                                                        style="<?php echo $rule['type'] !== 'user_role' ? 'display:none;' : ''; ?>"
+                                                        <?php echo $rule['type'] !== 'user_role' ? 'disabled' : ''; ?>>
+                                                    <option value="guest" <?php selected($rule['value'], 'guest'); ?>><?php esc_html_e('Guest (Logged out)', 'powertools'); ?></option>
+                                                    <?php foreach ($roles as $role_key => $role_name): ?>
+                                                        <option value="<?php echo esc_attr($role_key); ?>" <?php selected($rule['value'], $role_key); ?>><?php echo esc_html($role_name); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+
+                                                <select name="rules[<?php echo $index; ?>][value_post_type]" 
+                                                        class="pt-form-control ptools-rule-value ptools-rule-value-post-type" 
+                                                        style="<?php echo $rule['type'] !== 'post_type' ? 'display:none;' : ''; ?>"
+                                                        <?php echo $rule['type'] !== 'post_type' ? 'disabled' : ''; ?>>
+                                                    <?php foreach ($post_types as $pt): ?>
+                                                        <option value="<?php echo esc_attr($pt->name); ?>" <?php selected($rule['value'], $pt->name); ?>><?php echo esc_html($pt->label); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+
+                                            <button type="button" class="ptools-remove-rule" style="background: none; border: none; color: var(--pt-danger); cursor: pointer; padding: 4px;">
+                                                <span class="dashicons dashicons-trash"></span>
+                                            </button>
                                         </div>
-
-                                        <button type="button" class="button ptools-remove-rule" style="color: #d63638; border-color: #d63638; padding: 4px 8px; height: 34px;"><span class="dashicons dashicons-trash" style="margin-top: 0;"></span></button>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                                <button type="button" id="ptools-add-rule" class="pt-btn pt-btn-secondary" style="margin-top: 12px;">
+                                    <span class="dashicons dashicons-plus"></span>
+                                    <?php esc_html_e('Add Rule', 'powertools'); ?>
+                                </button>
                             </div>
-                            <button type="button" id="ptools-add-rule" class="button button-secondary" style="margin-top: 5px;"><?php esc_html_e('Add Rule', 'powertools'); ?></button>
+
+                            <div class="pt-form-group">
+                                <label class="pt-form-label"><?php esc_html_e('Code Snippet', 'powertools'); ?></label>
+                                <div id="ptools-code-editor-container" style="border: 1px solid var(--pt-border); border-radius: var(--pt-radius-sm); overflow: hidden; background: #fff;">
+                                    <div id="ptools-tag-top" style="background: var(--pt-bg-page); padding: 8px 16px; font-family: monospace; font-size: 13px; color: var(--pt-text-light); border-bottom: 1px solid var(--pt-border-soft); display: none;"></div>
+                                    <input type="hidden" id="ptools-code-type" value="<?php echo esc_attr($snippet_to_edit['type']); ?>">
+                                    <textarea name="code" id="ptools-code-editor" class="pt-form-control" style="height: 450px; border: none; border-radius: 0; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;" required><?php echo esc_textarea($snippet_to_edit['code']); ?></textarea>
+                                    <div id="ptools-tag-bottom" style="background: var(--pt-bg-page); padding: 8px 16px; font-family: monospace; font-size: 13px; color: var(--pt-text-light); border-top: 1px solid var(--pt-border-soft); display: none;"></div>
+                                </div>
+                                <p class="pt-text-muted" style="font-size: 13px; margin-top: 12px;">
+                                    <?php esc_html_e('Tip: Do not include opening/closing tags (like <?php ?> or <script>) as they are added automatically based on the snippet type.', 'powertools'); ?>
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="ptools-form-group" style="margin-bottom: 24px;">
-                            <label class="ptools-form-label"><?php esc_html_e('Code', 'powertools'); ?></label>
-                            
-                            <div id="ptools-code-editor-container" style="border: 1px solid #c3c4c7; border-radius: 8px; overflow: hidden; background: #fff;">
-                                <!-- Top Visual Tag -->
-                                <div id="ptools-tag-top" style="background: #f0f0f1; padding: 4px 12px; font-family: monospace; font-size: 13px; color: #8c8f94; border-bottom: 1px solid #c3c4c7; display: none;"></div>
-                                
-                                <input type="hidden" id="ptools-code-type" value="<?php echo esc_attr($snippet_to_edit['type']); ?>">
-                                <textarea name="code" id="ptools-code-editor" class="ptools-form-input ptools-form-input--mono" style="height: 400px; border: none; border-radius: 0;" required><?php echo esc_textarea($snippet_to_edit['code']); ?></textarea>
-                                
-                                <!-- Bottom Visual Tag -->
-                                <div id="ptools-tag-bottom" style="background: #f0f0f1; padding: 4px 12px; font-family: monospace; font-size: 13px; color: #8c8f94; border-top: 1px solid #c3c4c7; display: none;"></div>
-                            </div>
-                            
-                            <span class="ptools-form-hint"><?php esc_html_e('Enter your HTML, CSS, JS or PHP code. The opening/closing tags are automatically added for you based on the type.', 'powertools'); ?></span>
-                        </div>
-
-                        <div class="ptools-metabox-footer">
-                            <input type="submit" class="button button-primary" value="<?php esc_attr_e('Save Snippet', 'powertools'); ?>">
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-insert-code')); ?>" class="button" style="margin-left: 10px;"><?php esc_html_e('Cancel', 'powertools'); ?></a>
+                        <div class="pt-settings-footer">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=powertools-insert-code')); ?>" class="pt-btn pt-btn-secondary">
+                                <?php esc_html_e('Cancel', 'powertools'); ?>
+                            </a>
+                            <button type="submit" class="pt-btn pt-btn-primary">
+                                <?php esc_attr_e('Save Snippet', 'powertools'); ?>
+                            </button>
                         </div>
                     </form>
                 </div>
 
             <?php else: ?>
                 <!-- List View -->
-                <div class="ptools-metabox" style="margin-top: 0; padding: 0; overflow: hidden;">
+                <div class="pt-settings-container">
                     <?php if (empty($snippets)): ?>
-                        <div style="padding: 48px; text-align: center;">
-                            <span class="dashicons dashicons-code-standards" style="font-size: 48px; width: 48px; height: 48px; color: #c3c4c7; margin-bottom: 16px;"></span>
-                            <p style="color: #646970; font-size: 16px; margin: 0;"><?php esc_html_e('No snippets added yet. Create your first one!', 'powertools'); ?></p>
+                        <div style="padding: 80px 40px; text-align: center;">
+                            <div style="width: 80px; height: 80px; background: var(--pt-bg-page); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                                <span class="dashicons dashicons-code-standards" style="font-size: 40px; width: 40px; height: 40px; color: var(--pt-text-light);"></span>
+                            </div>
+                            <h3 class="pt-h2" style="margin-bottom: 8px;"><?php esc_html_e('No snippets found', 'powertools'); ?></h3>
+                            <p class="pt-p" style="max-width: 400px; margin: 0 auto 32px;">
+                                <?php esc_html_e('Create your first code snippet to start adding custom functionality to your WordPress site.', 'powertools'); ?>
+                            </p>
+                            <button type="button" onclick="document.getElementById('ptools-open-new-snippet-modal').click()" class="pt-btn pt-btn-primary">
+                                <?php esc_html_e('Create First Snippet', 'powertools'); ?>
+                            </button>
                         </div>
                     <?php else: ?>
-                        <table class="wp-list-table widefat fixed striped" style="border: none; box-shadow: none;">
-                            <thead>
-                                <tr>
-                                    <th style="padding: 16px 24px; font-weight: 600;"><?php esc_html_e('Snippet Title', 'powertools'); ?></th>
-                                    <th style="padding: 16px 24px; font-weight: 600; width: 120px;"><?php esc_html_e('Type', 'powertools'); ?></th>
-                                    <th style="padding: 16px 24px; font-weight: 600; width: 150px;"><?php esc_html_e('Location', 'powertools'); ?></th>
-                                    <th style="padding: 16px 24px; font-weight: 600; width: 100px; text-align: right;"><?php esc_html_e('Actions', 'powertools'); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($snippets as $id => $snippet): ?>
+                        <div style="overflow-x: auto;">
+                            <table class="wp-list-table widefat fixed striped" style="border: none; box-shadow: none; background: transparent;">
+                                <thead>
                                     <tr>
-                                        <td style="padding: 16px 24px;">
-                                            <a href="<?php echo esc_url(add_query_arg('edit', $id)); ?>" style="font-weight: 600; font-size: 14px; text-decoration: none; color: #2271b1;">
-                                                <?php echo esc_html($snippet['title']); ?>
-                                            </a>
-                                        </td>
-                                        <td style="padding: 16px 24px;">
-                                            <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; background: #f0f0f1; padding: 4px 8px; border-radius: 4px; color: #646970;">
-                                                <?php echo esc_html($snippet['type']); ?>
-                                            </span>
-                                        </td>
-                                        <td style="padding: 16px 24px;">
-                                            <span style="color: #646970; font-size: 13px;">
-                                                <?php echo esc_html(str_replace('wp_', '', $snippet['location'])); ?>
-                                            </span>
-                                        </td>
-                                        <td style="padding: 16px 24px; text-align: right;">
-                                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display: inline;">
-                                                    <input type="hidden" name="action" value="powertools_toggle_snippet">
-                                                    <input type="hidden" name="snippet_id" value="<?php echo esc_attr($id); ?>">
-                                                    <?php wp_nonce_field('powertools_toggle_snippet_nonce'); ?>
-                                                    <button type="submit" class="button-link" style="color: <?php echo !empty($snippet['active']) ? '#6b46c1' : '#c3c4c7'; ?>; text-decoration: none;" title="<?php echo !empty($snippet['active']) ? 'Deactivate' : 'Activate'; ?>">
-                                                        <span class="dashicons dashicons-<?php echo !empty($snippet['active']) ? 'visibility' : 'hidden'; ?>"></span>
-                                                    </button>
-                                                </form>
-                                                <a href="<?php echo esc_url(add_query_arg('edit', $id)); ?>" class="button-link" style="color: #2271b1; text-decoration: none;" title="Edit">
-                                                    <span class="dashicons dashicons-edit"></span>
-                                                </a>
-                                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display: inline;" onsubmit="return confirm('Are you sure?');">
-                                                    <input type="hidden" name="action" value="powertools_delete_snippet">
-                                                    <input type="hidden" name="snippet_id" value="<?php echo esc_attr($id); ?>">
-                                                    <?php wp_nonce_field('powertools_delete_snippet_nonce'); ?>
-                                                    <button type="submit" class="button-link" style="color: #d63638; text-decoration: none;" title="Delete">
-                                                        <span class="dashicons dashicons-trash"></span>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
+                                        <th style="padding: 20px 32px; font-weight: 600; background: var(--pt-bg-page); border-bottom: 1px solid var(--pt-border);"><?php esc_html_e('Snippet Name', 'powertools'); ?></th>
+                                        <th style="padding: 20px 32px; font-weight: 600; width: 120px; background: var(--pt-bg-page); border-bottom: 1px solid var(--pt-border);"><?php esc_html_e('Type', 'powertools'); ?></th>
+                                        <th style="padding: 20px 32px; font-weight: 600; width: 180px; background: var(--pt-bg-page); border-bottom: 1px solid var(--pt-border);"><?php esc_html_e('Location', 'powertools'); ?></th>
+                                        <th style="padding: 20px 32px; font-weight: 600; width: 140px; text-align: right; background: var(--pt-bg-page); border-bottom: 1px solid var(--pt-border);"><?php esc_html_e('Actions', 'powertools'); ?></th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($snippets as $id => $snippet): ?>
+                                        <tr>
+                                            <td style="padding: 20px 32px; vertical-align: middle;">
+                                                <a href="<?php echo esc_url(add_query_arg('edit', $id)); ?>" style="font-weight: 600; font-size: 15px; text-decoration: none; color: var(--pt-text-main); display: block;">
+                                                    <?php echo esc_html($snippet['title']); ?>
+                                                </a>
+                                            </td>
+                                            <td style="padding: 20px 32px; vertical-align: middle;">
+                                                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: var(--pt-primary-soft); padding: 4px 10px; border-radius: 4px; color: var(--pt-primary);">
+                                                    <?php echo esc_html($snippet['type']); ?>
+                                                </span>
+                                            </td>
+                                            <td style="padding: 20px 32px; vertical-align: middle;">
+                                                <span style="color: var(--pt-text-muted); font-size: 14px;">
+                                                    <?php echo esc_html(str_replace('wp_', '', $snippet['location'])); ?>
+                                                </span>
+                                            </td>
+                                            <td style="padding: 20px 32px; text-align: right; vertical-align: middle;">
+                                                <div style="display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
+                                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display: inline;">
+                                                        <input type="hidden" name="action" value="powertools_toggle_snippet">
+                                                        <input type="hidden" name="snippet_id" value="<?php echo esc_attr($id); ?>">
+                                                        <?php wp_nonce_field('powertools_toggle_snippet_nonce'); ?>
+                                                        <label class="pt-toggle" style="transform: scale(0.8);">
+                                                            <input type="checkbox" onchange="this.form.submit()" <?php checked(!empty($snippet['active'])); ?>>
+                                                            <span class="pt-toggle-slider"></span>
+                                                        </label>
+                                                    </form>
+                                                    <a href="<?php echo esc_url(add_query_arg('edit', $id)); ?>" style="color: var(--pt-text-muted); text-decoration: none;" title="Edit">
+                                                        <span class="dashicons dashicons-edit"></span>
+                                                    </a>
+                                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this snippet?');">
+                                                        <input type="hidden" name="action" value="powertools_delete_snippet">
+                                                        <input type="hidden" name="snippet_id" value="<?php echo esc_attr($id); ?>">
+                                                        <?php wp_nonce_field('powertools_delete_snippet_nonce'); ?>
+                                                        <button type="submit" style="background: none; border: none; color: var(--pt-danger); cursor: pointer; padding: 0;">
+                                                            <span class="dashicons dashicons-trash"></span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>
 
         <!-- New Snippet Modal -->
-        <div id="ptools-new-snippet-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100000; align-items: center; justify-content: center;">
-            <div style="background: #fff; width: 450px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
-                <div style="padding: 24px; border-bottom: 1px solid #f0f0f1; display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: 600;"><?php esc_html_e('Create New Snippet', 'powertools'); ?></h3>
-                    <button type="button" id="ptools-close-new-snippet-modal" class="button-link" style="color: #646970;"><span class="dashicons dashicons-no-alt"></span></button>
+        <div id="ptools-new-snippet-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+            <div class="pt-fade-in" style="background: #fff; width: 500px; border-radius: var(--pt-radius-lg); border: 1px solid var(--pt-border); overflow: hidden;">
+                <div style="padding: 32px; border-bottom: 1px solid var(--pt-border-soft); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; font-size: 20px; font-weight: 600;"><?php esc_html_e('Create New Snippet', 'powertools'); ?></h3>
+                    <button type="button" id="ptools-close-new-snippet-modal" style="background: none; border: none; color: var(--pt-text-light); cursor: pointer;"><span class="dashicons dashicons-no-alt"></span></button>
                 </div>
-                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="padding: 24px;">
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="padding: 32px;">
                     <input type="hidden" name="action" value="powertools_create_snippet">
                     <?php wp_nonce_field('powertools_create_snippet_nonce'); ?>
                     
-                    <div class="ptools-form-group" style="margin-bottom: 24px;">
-                        <label class="ptools-form-label" style="margin-bottom: 8px;"><?php esc_html_e('Choose Language', 'powertools'); ?></label>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                            <label style="cursor: pointer; text-align: center; border: 2px solid #f0f0f1; padding: 16px; border-radius: 12px; transition: all 0.2s;">
+                    <div class="pt-form-group" style="margin-bottom: 32px;">
+                        <label class="pt-form-label" style="margin-bottom: 16px;"><?php esc_html_e('Snippet Type', 'powertools'); ?></label>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <label style="cursor: pointer; text-align: center; border: 1px solid var(--pt-border); padding: 20px; border-radius: var(--pt-radius); transition: var(--pt-transition); display: block;">
                                 <input type="radio" name="type" value="html" checked style="display: none;">
-                                <div style="font-weight: 600; font-size: 14px;">HTML</div>
-                                <div style="font-size: 11px; color: #8c8f94; margin-top: 4px;">Universal</div>
+                                <div style="font-weight: 700; font-size: 15px;">HTML</div>
+                                <div style="font-size: 12px; color: var(--pt-text-light); margin-top: 4px;">Plain Text</div>
                             </label>
-                            <label style="cursor: pointer; text-align: center; border: 2px solid #f0f0f1; padding: 16px; border-radius: 12px; transition: all 0.2s;">
+                            <label style="cursor: pointer; text-align: center; border: 1px solid var(--pt-border); padding: 20px; border-radius: var(--pt-radius); transition: var(--pt-transition); display: block;">
                                 <input type="radio" name="type" value="js" style="display: none;">
-                                <div style="font-weight: 600; font-size: 14px;">JS</div>
-                                <div style="font-size: 11px; color: #8c8f94; margin-top: 4px;">JavaScript</div>
+                                <div style="font-weight: 700; font-size: 15px;">JS</div>
+                                <div style="font-size: 12px; color: var(--pt-text-light); margin-top: 4px;">Scripts</div>
                             </label>
-                            <label style="cursor: pointer; text-align: center; border: 2px solid #f0f0f1; padding: 16px; border-radius: 12px; transition: all 0.2s;">
+                            <label style="cursor: pointer; text-align: center; border: 1px solid var(--pt-border); padding: 20px; border-radius: var(--pt-radius); transition: var(--pt-transition); display: block;">
                                 <input type="radio" name="type" value="php" style="display: none;">
-                                <div style="font-weight: 600; font-size: 14px;">PHP</div>
-                                <div style="font-size: 11px; color: #8c8f94; margin-top: 4px;">Scripting</div>
+                                <div style="font-weight: 700; font-size: 15px;">PHP</div>
+                                <div style="font-size: 12px; color: var(--pt-text-light); margin-top: 4px;">Server Side</div>
                             </label>
                         </div>
                     </div>
-
-                    <div style="display: flex; gap: 12px; margin-top: 32px;">
-                        <button type="button" class="button ptools-close-new-snippet-modal" style="flex: 1; height: 44px; border-radius: 10px;"><?php esc_html_e('Cancel', 'powertools'); ?></button>
-                        <button type="submit" class="button button-primary" style="flex: 2; height: 44px; border-radius: 10px;"><?php esc_html_e('Create Snippet', 'powertools'); ?></button>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 16px;">
+                        <button type="button" onclick="document.getElementById('ptools-close-new-snippet-modal').click()" class="pt-btn pt-btn-secondary">
+                            <?php esc_html_e('Cancel', 'powertools'); ?>
+                        </button>
+                        <button type="submit" class="pt-btn pt-btn-primary">
+                            <?php esc_html_e('Continue', 'powertools'); ?>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -510,7 +541,7 @@ class Insert_Code {
 
         <style>
             .CodeMirror {
-                height: 400px;
+                height: 450px;
                 font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
                 font-size: 13px;
                 line-height: 1.6;
@@ -519,9 +550,9 @@ class Insert_Code {
                 border: none;
             }
             #ptools-new-snippet-modal label:has(input:checked) {
-                border-color: #6b46c1 !important;
-                background: #f8f7ff;
-                color: #6b46c1;
+                border-color: var(--pt-primary) !important;
+                background: var(--pt-primary-soft) !important;
+                color: var(--pt-primary) !important;
             }
         </style>
 
@@ -531,7 +562,7 @@ class Insert_Code {
                 $('#ptools-open-new-snippet-modal').on('click', function() {
                     $('#ptools-new-snippet-modal').css('display', 'flex');
                 });
-                $('.ptools-close-new-snippet-modal, #ptools-close-new-snippet-modal').on('click', function() {
+                $('#ptools-close-new-snippet-modal').on('click', function() {
                     $('#ptools-new-snippet-modal').hide();
                 });
 
@@ -655,15 +686,16 @@ class Insert_Code {
             update_post_meta($post_id, '_pt_location', 'wp_head');
             update_post_meta($post_id, '_pt_rules', array());
             
-            wp_redirect(add_query_arg('edit', $post_id, admin_url('admin.php?page=powertools-insert-code')));
-        } else {
-            wp_redirect(admin_url('admin.php?page=powertools-insert-code'));
+            wp_redirect(admin_url('admin.php?page=powertools-insert-code&edit=' . $post_id));
+            exit;
         }
+
+        wp_redirect(admin_url('admin.php?page=powertools-insert-code&error=1'));
         exit;
     }
 
     /**
-     * Handle saving snippet
+     * Handle saving a snippet
      */
     public function handle_save_snippet() {
         if (!current_user_can('manage_options')) {
@@ -673,59 +705,46 @@ class Insert_Code {
         check_admin_referer('powertools_save_snippet_nonce');
 
         $snippet_id = isset($_POST['snippet_id']) ? intval($_POST['snippet_id']) : 0;
-        
-        $rules = array();
-        if (isset($_POST['rules']) && is_array($_POST['rules'])) {
-            foreach ($_POST['rules'] as $rule) {
-                if (!empty($rule['type'])) {
-                    $value = '';
-                    if ($rule['type'] === 'user_role') {
-                        $value = isset($rule['value_role']) ? sanitize_text_field($rule['value_role']) : '';
-                    } elseif ($rule['type'] === 'post_type') {
-                        $value = isset($rule['value_post_type']) ? sanitize_text_field($rule['value_post_type']) : '';
-                    } else {
-                        $value = isset($rule['value']) ? sanitize_text_field($rule['value']) : '';
-                    }
+        if (!$snippet_id) return;
 
-                    $rules[] = array(
-                        'type' => sanitize_text_field($rule['type']),
-                        'value' => $value
-                    );
-                }
+        $title    = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
+        $location = isset($_POST['location']) ? sanitize_text_field($_POST['location']) : 'wp_head';
+        $code     = isset($_POST['code']) ? $_POST['code'] : ''; // We want to keep the raw code
+        $rules    = isset($_POST['rules']) ? $_POST['rules'] : array();
+
+        // Process rules
+        $processed_rules = array();
+        foreach ($rules as $rule) {
+            if (empty($rule['type'])) continue;
+
+            $value = $rule['value'];
+            if ($rule['type'] === 'user_role') {
+                $value = $rule['value_role'];
+            } elseif ($rule['type'] === 'post_type') {
+                $value = $rule['value_post_type'];
             }
+
+            $processed_rules[] = array(
+                'type'  => sanitize_text_field($rule['type']),
+                'value' => sanitize_text_field($value)
+            );
         }
 
-        $post_data = array(
-            'post_title'   => sanitize_text_field($_POST['title']),
-            'post_content' => stripslashes($_POST['code']),
-            'post_type'    => self::POST_TYPE,
-            'post_status'  => 'publish' // Default to active on save/update
-        );
+        wp_update_post(array(
+            'ID'           => $snippet_id,
+            'post_title'   => $title,
+            'post_content' => $code,
+        ));
 
-        if ($snippet_id) {
-            $post_data['ID'] = $snippet_id;
-            // Preserve status if updating
-            $post_data['post_status'] = get_post_status($snippet_id);
-            wp_update_post($post_data);
-        } else {
-            $snippet_id = wp_insert_post($post_data);
-        }
+        update_post_meta($snippet_id, '_pt_location', $location);
+        update_post_meta($snippet_id, '_pt_rules', $processed_rules);
 
-        if ($snippet_id) {
-            // Type is immutable on edit, but we update meta for new ones
-            if (!isset($_POST['snippet_id'])) {
-                update_post_meta($snippet_id, '_pt_type', sanitize_text_field($_POST['type']));
-            }
-            update_post_meta($snippet_id, '_pt_location', sanitize_text_field($_POST['location']));
-            update_post_meta($snippet_id, '_pt_rules', $rules);
-        }
-
-        wp_redirect(add_query_arg(array('page' => 'powertools-insert-code', 'success' => 1), admin_url('admin.php')));
+        wp_redirect(admin_url('admin.php?page=powertools-insert-code&success=1&edit=' . $snippet_id));
         exit;
     }
 
     /**
-     * Handle deleting snippet
+     * Handle deleting a snippet
      */
     public function handle_delete_snippet() {
         if (!current_user_can('manage_options')) {
@@ -735,16 +754,16 @@ class Insert_Code {
         check_admin_referer('powertools_delete_snippet_nonce');
 
         $snippet_id = isset($_POST['snippet_id']) ? intval($_POST['snippet_id']) : 0;
-        if ($snippet_id && get_post_type($snippet_id) === self::POST_TYPE) {
+        if ($snippet_id) {
             wp_delete_post($snippet_id, true);
         }
 
-        wp_redirect(add_query_arg('page', 'powertools-insert-code', admin_url('admin.php')));
+        wp_redirect(admin_url('admin.php?page=powertools-insert-code'));
         exit;
     }
 
     /**
-     * Handle toggling snippet active status
+     * Handle toggling a snippet
      */
     public function handle_toggle_snippet() {
         if (!current_user_can('manage_options')) {
@@ -754,17 +773,16 @@ class Insert_Code {
         check_admin_referer('powertools_toggle_snippet_nonce');
 
         $snippet_id = isset($_POST['snippet_id']) ? intval($_POST['snippet_id']) : 0;
-        if ($snippet_id && get_post_type($snippet_id) === self::POST_TYPE) {
-            $status = get_post_status($snippet_id);
-            $new_status = ($status === 'publish') ? 'draft' : 'publish';
-            
+        if ($snippet_id) {
+            $post = get_post($snippet_id);
+            $new_status = $post->post_status === 'publish' ? 'draft' : 'publish';
             wp_update_post(array(
                 'ID'          => $snippet_id,
                 'post_status' => $new_status
             ));
         }
 
-        wp_redirect(add_query_arg('page', 'powertools-insert-code', admin_url('admin.php')));
+        wp_redirect(admin_url('admin.php?page=powertools-insert-code'));
         exit;
     }
 }

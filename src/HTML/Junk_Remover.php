@@ -45,35 +45,45 @@ class Junk_Remover {
 
         $is_junk_remover_enabled = get_option(self::OPTION_NAME);
         ?>
-        <div class="ptools-settings">
-            <div class="ptools-settings-header">
-                <h2 class="ptools-settings-title"><?php esc_html_e('HTML Junk Remover', 'powertools'); ?></h2>
-                <div class="ptools-settings-descr">
-                    <?php esc_html_e('This tool removes the useless lines of code from HTML (such as WordPress version, emojis, etc.)', 'powertools'); ?>
+        <div class="powertools-wrap pt-fade-in">
+            <header class="pt-intro">
+                <div class="pt-intro-logo">
+                    <span class="dashicons dashicons-html" style="font-size: 48px; width: 48px; height: 48px; color: var(--pt-primary);"></span>
                 </div>
-            </div>
+                <div class="pt-intro-content">
+                    <h1 class="pt-h1"><?php esc_html_e('HTML Junk Remover', 'powertools'); ?></h1>
+                    <p class="pt-p">
+                        <?php esc_html_e('Clean up your website source code by removing unnecessary tags, scripts, and links from the HEAD section.', 'powertools'); ?>
+                    </p>
+                </div>
+            </header>
 
-            <form class="ptools-metabox" method="post">
+            <form class="pt-settings-container" method="post">
                 <?php wp_nonce_field('powertools_html_junk_remover'); ?>
+                
+                <div class="pt-settings-header">
+                    <h2 class="pt-h2"><?php esc_html_e('Settings', 'powertools'); ?></h2>
+                </div>
 
-                <label class="ptools-toggler">
-                    <div class="ptools-toggler-input">
-                        <input type="checkbox" 
-                               id="enable_html_junk_remover" 
-                               name="enable_html_junk_remover" 
-                               <?php checked(1, $is_junk_remover_enabled); ?> />
+                <div class="pt-settings-body">
+                    <div class="pt-form-group">
+                        <label class="pt-checkbox-label">
+                            <input type="checkbox" 
+                                   name="enable_html_junk_remover" 
+                                   <?php checked(1, $is_junk_remover_enabled); ?> />
+                            <div>
+                                <div style="font-weight: 600;"><?php esc_html_e('Remove HTML Junk', 'powertools'); ?></div>
+                                <div class="pt-text-muted" style="font-size: 14px;"><?php esc_html_e('This will remove WordPress version tags, emojis, REST API links, and other discovery links from your site\'s head.', 'powertools'); ?></div>
+                            </div>
+                        </label>
                     </div>
-                    <div class="ptools-toggler-content">
-                        <div><?php esc_html_e('Remove HTML junk', 'powertools'); ?></div>
-                        <div><i><?php esc_html_e('Remove version tags, emojis and stuff from HEAD', 'powertools'); ?></i></div>
-                    </div>
-                </label>
+                </div>
 
-                <div class="ptools-metabox-footer">
+                <div class="pt-settings-footer">
                     <input type="submit" 
                            name="save" 
-                           value="<?php esc_attr_e('Save Changes', 'powertools'); ?>" 
-                           class="button-primary">
+                           value="<?php esc_attr_e('Save Settings', 'powertools'); ?>" 
+                           class="pt-btn pt-btn-primary">
                 </div>
             </form>
         </div>

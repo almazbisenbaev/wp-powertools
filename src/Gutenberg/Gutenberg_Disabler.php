@@ -45,41 +45,45 @@ class Gutenberg_Disabler {
 
         $is_gutenberg_disabled = get_option(self::OPTION_NAME);
         ?>
-        <div class="ptools-settings">
-            <div class="ptools-settings-header">
-                <h2 class="ptools-settings-title"><?php esc_html_e('Disable Gutenberg editor', 'powertools'); ?></h2>
-                <div class="ptools-settings-descr">
-                    <?php esc_html_e('This setting disables the new editor and enables the legacy one', 'powertools'); ?>
+        <div class="powertools-wrap pt-fade-in">
+            <header class="pt-intro">
+                <div class="pt-intro-logo">
+                    <span class="dashicons dashicons-edit" style="font-size: 48px; width: 48px; height: 48px; color: var(--pt-primary);"></span>
                 </div>
-            </div>
+                <div class="pt-intro-content">
+                    <h1 class="pt-h1"><?php esc_html_e('Gutenberg Disabler', 'powertools'); ?></h1>
+                    <p class="pt-p">
+                        <?php esc_html_e('Switch back to the Classic Editor and disable Gutenberg block library assets.', 'powertools'); ?>
+                    </p>
+                </div>
+            </header>
 
-            <form class="ptools-metabox" method="post">
+            <form class="pt-settings-container" method="post">
                 <?php wp_nonce_field('powertools_gutenberg_disabler'); ?>
+                
+                <div class="pt-settings-header">
+                    <h2 class="pt-h2"><?php esc_html_e('Settings', 'powertools'); ?></h2>
+                </div>
 
-                <label class="ptools-toggler" for="disable_gutenberg">
-                    <div class="ptools-toggler-input">
-                        <input type="checkbox" 
-                               id="disable_gutenberg" 
-                               name="disable_gutenberg" 
-                               <?php checked(1, $is_gutenberg_disabled); ?> />
+                <div class="pt-settings-body">
+                    <div class="pt-form-group">
+                        <label class="pt-checkbox-label">
+                            <input type="checkbox" 
+                                   name="disable_gutenberg" 
+                                   <?php checked(1, $is_gutenberg_disabled); ?> />
+                            <div>
+                                <div style="font-weight: 600;"><?php esc_html_e('Disable Block Editor', 'powertools'); ?></div>
+                                <div class="pt-text-muted" style="font-size: 14px;"><?php esc_html_e('This will restore the Classic Editor for all post types and disable block-based widgets.', 'powertools'); ?></div>
+                            </div>
+                        </label>
                     </div>
-                    <div class="ptools-toggler-content">
-                        <div><?php esc_html_e('Use Gutenberg Disabler', 'powertools'); ?></div>
-                    </div>
-                </label>
+                </div>
 
-                <!-- <div class="ptools-field">
-                    <div class="ptools-field-label">Disable Gutenberg for the following post types:</div>
-                    <div class="ptools-field-instructions">Leave empty to disable for all post types</div>
-                    <input type="text" value="">
-                    <div class="ptools-field-hint">Comma-separated list. E.g: <i>post, page, portfolio</i></div>
-                </div> -->
-
-                <div class="ptools-metabox-footer">
+                <div class="pt-settings-footer">
                     <input type="submit" 
                            name="save" 
-                           value="<?php esc_attr_e('Save Changes', 'powertools'); ?>" 
-                           class="button-primary">
+                           value="<?php esc_attr_e('Save Settings', 'powertools'); ?>" 
+                           class="pt-btn pt-btn-primary">
                 </div>
             </form>
         </div>
