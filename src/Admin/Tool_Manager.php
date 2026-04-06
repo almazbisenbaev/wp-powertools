@@ -44,6 +44,11 @@ class Tool_Manager {
             'description' => 'Return the legacy editor for specific post types',
             'class' => 'PowerTools\\Gutenberg\\Gutenberg_Disabler'
         ],
+        'comments_disabler' => [
+            'name' => 'Comments Disabler',
+            'description' => 'This tool allows you to disable comments globally across your site',
+            'class' => 'PowerTools\\Comments\\Comments_Disabler'
+        ],
         'html_junk_remover' => [
             'name' => 'HTML Junk Remover',
             'description' => 'This tool removes the useless lines of code from HTML (such as WordPress version, emojis, etc.)',
