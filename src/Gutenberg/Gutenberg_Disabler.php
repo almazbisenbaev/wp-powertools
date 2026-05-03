@@ -104,37 +104,37 @@ class Gutenberg_Disabler {
 
                 <div class="pt-settings-body">
                     <div class="pt-form-group">
-                        <label class="pt-radio-label" style="display: block; margin-bottom: 20px;">
+                        <label class="pt-radio-label">
                             <input type="radio" 
                                    name="gutenberg_mode" 
                                    value="all"
                                    id="pt-gutenberg-mode-all"
                                    <?php checked($settings['enabled'] && $settings['mode'] === 'all'); ?> />
-                            <div style="display: inline-block; vertical-align: top; margin-left: 10px;">
+                            <div>
                                 <div style="font-weight: 600;"><?php esc_html_e('Disable Globally', 'powertools'); ?></div>
                                 <div class="pt-text-muted" style="font-size: 14px;"><?php esc_html_e('Completely disable the block editor for all post types and widgets.', 'powertools'); ?></div>
                             </div>
                         </label>
 
-                        <label class="pt-radio-label" style="display: block; margin-bottom: 20px;">
+                        <label class="pt-radio-label">
                             <input type="radio" 
                                    name="gutenberg_mode" 
                                    value="selective"
                                    id="pt-gutenberg-mode-selective"
                                    <?php checked($settings['enabled'] && $settings['mode'] === 'selective'); ?> />
-                            <div style="display: inline-block; vertical-align: top; margin-left: 10px;">
+                            <div>
                                 <div style="font-weight: 600;"><?php esc_html_e('Disable Selectively', 'powertools'); ?></div>
                                 <div class="pt-text-muted" style="font-size: 14px;"><?php esc_html_e('Choose specific post types where you want to use the Classic Editor.', 'powertools'); ?></div>
                             </div>
                         </label>
 
-                        <label class="pt-radio-label" style="display: block; margin-bottom: 20px;">
+                        <label class="pt-radio-label">
                             <input type="radio" 
                                    name="gutenberg_mode" 
                                    value="none"
                                    id="pt-gutenberg-mode-none"
                                    <?php checked(!$settings['enabled']); ?> />
-                            <div style="display: inline-block; vertical-align: top; margin-left: 10px;">
+                            <div>
                                 <div style="font-weight: 600;"><?php esc_html_e('Keep Gutenberg Enabled', 'powertools'); ?></div>
                                 <div class="pt-text-muted" style="font-size: 14px;"><?php esc_html_e('Do not disable the block editor.', 'powertools'); ?></div>
                             </div>
@@ -147,9 +147,9 @@ class Gutenberg_Disabler {
                         </label>
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
                             <?php foreach ($post_types as $post_type) : ?>
-                                <label>
+                                <label class="pt-checkbox-label" style="padding: 8px;">
                                     <input type="checkbox" name="post_types[]" value="<?php echo esc_attr($post_type->name); ?>" <?php checked(in_array($post_type->name, $settings['post_types']), true); ?> />
-                                    <?php echo esc_html($post_type->label); ?>
+                                    <span style="font-weight: 500;"><?php echo esc_html($post_type->label); ?></span>
                                 </label>
                             <?php endforeach; ?>
                         </div>

@@ -342,6 +342,53 @@ input:checked + .pt-toggle-slider:before {
     left: 50%;
 }
 
+/* Radio Modern */
+.pt-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    padding: 16px;
+    border-radius: var(--pt-radius-sm);
+    transition: var(--pt-transition);
+}
+
+.pt-radio-label:hover {
+    background: var(--pt-bg-page);
+}
+
+.pt-radio-label input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--pt-border);
+    cursor: pointer;
+    margin: 0;
+    background-color: white;
+    transition: var(--pt-transition);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.pt-radio-label input[type="radio"]:checked {
+    background-color: var(--pt-primary);
+    border-color: var(--pt-primary);
+}
+
+.pt-radio-label input[type="radio"]:checked:after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
 /* Footer */
 .pt-footer {
