@@ -19,4 +19,4 @@ Download the latest release: https://almazbisenbaev.gumroad.com/l/wp-powertools
 
 ---
 
-Author: Almaz Bisenbaev (https://helloalmaz.com)
+Author: Almaz Bissenbayev (https://helloalmaz.com)
