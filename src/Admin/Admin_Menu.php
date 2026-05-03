@@ -1,6 +1,6 @@
 <?php
 /**
- * Menu setup for Power Tools plugin
+ * Menu setup for PowerTools plugin
  *
  * @package PowerTools
  */
@@ -29,8 +29,8 @@ class Admin_Menu {
     public function setup_menu() {
         // Add main menu page
         add_menu_page(
-            __('Power Tools', 'powertools'),
-            __('Power Tools', 'powertools'),
+            __('PowerTools', 'powertools'),
+            __('PowerTools', 'powertools'),
             'manage_options',
             'powertools',
             array($this, 'render_homepage'),

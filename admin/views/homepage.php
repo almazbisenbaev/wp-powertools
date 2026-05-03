@@ -1,6 +1,6 @@
 <?php
 /**
- * Homepage template for Power Tools plugin
+ * Homepage template for PowerTools plugin
  *
  * @package PowerTools
  */
@@ -18,10 +18,10 @@ $active_tools = $tool_manager->get_active_tools();
 <div class="powertools-wrap pt-fade-in">
     <header class="pt-intro">
         <div class="pt-intro-logo">
-            <img src="<?php echo esc_url(POWERTOOLS_PLUGIN_URL . 'images/logo-icon.png'); ?>" alt="<?php esc_attr_e('Power Tools Logo', 'powertools'); ?>">
+            <img src="<?php echo esc_url(POWERTOOLS_PLUGIN_URL . 'images/logo-icon.png'); ?>" alt="<?php esc_attr_e('PowerTools Logo', 'powertools'); ?>">
         </div>
         <div class="pt-intro-content">
-            <h1 class="pt-h1"><?php esc_html_e('Power Tools', 'powertools'); ?></h1>
+            <h1 class="pt-h1"><?php esc_html_e('PowerTools', 'powertools'); ?></h1>
             <p class="pt-p">
                 <?php esc_html_e('Modern developer utilities to maximize your WordPress productivity.', 'powertools'); ?>
             </p>

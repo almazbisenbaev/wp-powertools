@@ -1,5 +1,5 @@
 
-# WP Power Tools
+# WP PowerTools
 
 Simple tools that solve common problems during WordPress development and maximize your productivity
 
@@ -13,7 +13,10 @@ Download the latest release: https://almazbisenbaev.gumroad.com/l/wp-powertools
 - Custom Post Types Manager: Easily create and manage custom post types
 - HTML Junk Remover: Removes unnecessary code from the HTML such as generator version, WordPress emojis etc.
 - Junk Cleaner: This tool lets you delete the drafts and revisions that are taking up your disc space
+- Code Snippets: Easily insert and manage custom code snippets (CSS, JS, HTML) in the header, body, or footer
+- Comments Disabler: Completely disable WordPress comments globally and clean up your admin area, prevent spam comments via REST API
+- System Information: View a detailed overview of your WordPress environment and server configuration
 
 ---
 
-Author: Almaz Bisenbaev (https://github.com/almazbisenbaev)
+Author: Almaz Bisenbaev (https://helloalmaz.com)
