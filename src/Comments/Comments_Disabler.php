@@ -140,6 +140,39 @@ class Comments_Disabler {
 
         // Remove comments metabox from post types
         add_action('admin_init', array($this, 'remove_comments_metabox'));
+
+        // Disable REST API support for comments
+        add_filter('rest_endpoints', array($this, 'disable_comments_rest_endpoints'));
+
+        // Disable XML-RPC for comments
+        add_filter('xmlrpc_methods', array($this, 'disable_xmlrpc_comments'));
+    }
+
+    /**
+     * Disable REST API endpoints for comments
+     */
+    public function disable_comments_rest_endpoints($endpoints) {
+        if (isset($endpoints['/wp/v2/comments'])) {
+            unset($endpoints['/wp/v2/comments']);
+        }
+        if (isset($endpoints['/wp/v2/comments/(?P<id>[\d]+)'])) {
+            unset($endpoints['/wp/v2/comments/(?P<id>[\d]+)']);
+        }
+        return $endpoints;
+    }
+
+    /**
+     * Disable XML-RPC methods for comments
+     */
+    public function disable_xmlrpc_comments($methods) {
+        unset($methods['wp.getCommentCount']);
+        unset($methods['wp.getComment']);
+        unset($methods['wp.getComments']);
+        unset($methods['wp.newComment']);
+        unset($methods['wp.editComment']);
+        unset($methods['wp.deleteComment']);
+        unset($methods['wp.getCommentStatusList']);
+        return $methods;
     }
 
     /**
